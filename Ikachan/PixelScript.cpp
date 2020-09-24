@@ -86,7 +86,8 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 			{
 				//Clear line and move to bottom of screen
 				ptx->ypos_line[i] = SURFACE_HEIGHT * ptx->scale;
-				CortBox2(&rcPsLine, 0x000000, SURFACE_ID_WORDS0 + i);
+				c[i][0] = 0;
+				//CortBox2(&rcPsLine, 0x000000, SURFACE_ID_WORDS0 + i);
 
 				//Read new line
 				for (int j = 0; j < 40; j++)
