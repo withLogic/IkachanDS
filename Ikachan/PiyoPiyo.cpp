@@ -6,8 +6,6 @@
 
 #include <stdlib.h>
 
-#include "NDSSoundSpec.h"
-
 #define MAX_RECORD 1000
 
 struct PIYOPIYO_TRACKHEADER
@@ -168,11 +166,18 @@ int tick_count = 0;
 
 void PiyoPiyoProc()
 {
+
+	const unsigned int frameDelays[3] = {17, 16, 17};
+	static unsigned int frame;
+
+	const unsigned int delay = frameDelays[frame % 3];
+	++frame;
+	
 	int pan_tbl[8] = {
 		0, 96, 180, 224, 256, 288, 332, 420
 	};
 	//Check if next step should be played
-	tick_count += SND_BUFFERSIZE;
+	tick_count += delay;
 	if (gPiyoPiyo.init && gPiyoPiyo.playing && tick_count > (gPiyoPiyo.tick + gPiyoPiyo.header.wait))
 	{
 		//Check if position passes loop point
@@ -205,7 +210,6 @@ void PiyoPiyoProc()
 		//Remember previous tick
 		gPiyoPiyo.tick = tick_count;
 	}
-	
 	updateChannelStates();	
 }
 

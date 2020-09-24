@@ -163,7 +163,6 @@ BOOL Game()
 		if (!Flip_SystemTask())
 			return TRUE;
 		PiyoPiyoProc();
-		printf("a");
 	}
 	
 	//Load map event and data

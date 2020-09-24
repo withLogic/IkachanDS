@@ -10,10 +10,10 @@
 #include "nds.h"
 #include "soundFifo.h"
 
-#include "NDSSoundSpec.h"
-
 #include <algorithm>
 #include <math.h>
+
+#include "Generic.h"
 
 #define clamp(x, y, z) ((x > z) ? z : (x < y) ? y : x)
 
@@ -267,23 +267,22 @@ BOOL InitSoundObject(const char* resname, int no)
 
     //Get file path
     char path[MAX_PATH];
-    sprintf(path, "%s/Wave/%s.wavv", gModulePath, resname);
+    sprintf(path, "%s/Wave/%s.raw", gModulePath, resname);
     
+	size_t size = GetFileSizeLong(path);
     //Open file
     FILE *fp = fopen(path, "rb");
     if (fp == NULL)
         return FALSE;
-    
-	fseek(fp, 0x36, SEEK_SET);
+	
     //Read file
-    size_t size = File_ReadLE32(fp);
     signed char *data = (signed char *)malloc(size);
     if (data == NULL)
     {
         fclose(fp);
         return FALSE;
     }
-	fseek(fp, 0x3A, SEEK_SET);
+
     fread(data, size, 1, fp);
     fclose(fp);
     
@@ -341,7 +340,7 @@ void ChangeSoundVolume(int no, long volume) //300 is MAX and 300 is normal
 void ChangeSoundPan(int no, long pan) //512 is MAX and 256 is normal
 {
 	if (lpSECONDARYBUFFER[no] != NULL)
-		lpSECONDARYBUFFER[no]->SetPan((pan - 256) * 10);
+		lpSECONDARYBUFFER[no]->SetPan(pan);
 }
 
 //PiyoPiyo sound
