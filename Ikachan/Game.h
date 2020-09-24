@@ -1,6 +1,7 @@
 #pragma once
-#include <windows.h>
+//#include <windows.h>
+#include "WindowsWrapper.h"
 
 extern RECT grcLoading;
 
-BOOL Game(HWND hWnd);
+BOOL Game(void);

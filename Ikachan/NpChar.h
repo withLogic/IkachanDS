@@ -1,6 +1,7 @@
 #pragma once
 #include "Effect.h"
-#include <windows.h>
+//#include <windows.h>
+#include "WindowsWrapper.h"
 
 #define MAX_NPCS (100)
 

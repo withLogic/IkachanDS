@@ -1,30 +1,230 @@
 #include "Sound.h"
 #include "System.h"
-#include <dsound.h>
+//#include <dsound.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <cstring>
+
+#include "File.h"
+
+#include "nds.h"
+#include "soundFifo.h"
+
+#include "NDSSoundSpec.h"
+
+#include <algorithm>
+#include <math.h>
+
+#define clamp(x, y, z) ((x > z) ? z : (x < y) ? y : x)
 
 //DirectSound objects
-LPDIRECTSOUND       lpDS;
-LPDIRECTSOUNDBUFFER lpPRIMARYBUFFER;
+SOUNDBUFFER* lpPRIMARYBUFFER;
 
 //DirectSound buffers
 #define SE_MAX 512
-LPDIRECTSOUNDBUFFER lpSECONDARYBUFFER[SE_MAX];
+SOUNDBUFFER* lpSECONDARYBUFFER[SE_MAX];
+
+
+
+
+
+#define NUM_CHANNELS 16
+
+char channelStates[NUM_CHANNELS] = {0};
+
+s8 getFreeChannel(void)
+{
+	for(u8 i=0;i<16;i++)
+	{	
+		if(!channelStates[i])
+		{
+			return i;
+		}
+			
+	}
+	return -1;
+}
+
+
+
+//Keep track of all existing sound buffers
+SOUNDBUFFER *soundBuffers;
+
+
+void updateChannelStates(void)
+{
+	//todo: optimize this
+	//if a one-shot sound has passed all of its samples already, make channelStates[channel] free
+	for (SOUNDBUFFER *sound = soundBuffers; sound != NULL; sound = sound->next)
+	{
+		if(sound->playing && sound->looping == false)
+		{
+			if(sound->timer++ * (sound->frequency / 63) > sound->size) // samples in a frame plus a bit
+			{
+				// TODO: give organbuffer priority
+				sound->playing = false;
+				channelStates[sound->channelId] = 0;
+				soundKill(sound->channelId);
+				sound->channelId = -1;
+				sound->timer = 0;
+			}
+		}
+	}
+}
+
+//Sound buffer code
+SOUNDBUFFER::SOUNDBUFFER(size_t bufSize)
+{
+	//Set parameters
+	size = bufSize;
+	
+	playing = false;
+	looping = false;
+	looped = false;
+
+	timer = 0;
+	
+	frequency = 0;
+	volume = 127;
+	pan = 63;
+	samplePosition = 0;
+	channelId = -1;
+	
+	//Create waveform buffer
+	data = new s8[bufSize];
+	memset(data, 0x80, bufSize);
+	
+	//Add to buffer list
+	this->next = soundBuffers;
+	soundBuffers = this;
+}
+
+SOUNDBUFFER::~SOUNDBUFFER()
+{
+	//Free buffer
+	if (data)
+		delete[] data;
+	
+	//Remove from buffer list
+	for (SOUNDBUFFER **soundBuffer = &soundBuffers; *soundBuffer != NULL; soundBuffer = &(*soundBuffer)->next)
+	{
+		if (*soundBuffer == this)
+		{
+			*soundBuffer = this->next;
+			break;
+		}
+	}
+}
+
+void SOUNDBUFFER::Release()
+{
+	//TODO: find a better and more stable(?) way to handle this function
+	delete this;
+}
+
+void SOUNDBUFFER::Lock(s8 **outBuffer, size_t *outSize)
+{
+	if (outBuffer != NULL)
+		*outBuffer = data;
+
+	if (outSize != NULL)
+		*outSize = size;
+}
+
+void SOUNDBUFFER::Unlock()
+{
+	//Nothing
+}
+
+void SOUNDBUFFER::SetCurrentPosition(uint32_t dwNewPosition)
+{
+	samplePosition = dwNewPosition;
+}
+
+void SOUNDBUFFER::SetFrequency(uint32_t dwFrequency)
+{
+	frequency = dwFrequency;
+	//SCHANNEL_TIMER(channelId) = SOUND_FREQ(frequency);
+	if (channelId == -1) return;
+	soundSetFreq(channelId, (u16)frequency);
+}
+
+float MillibelToVolume(int32_t lVolume)
+{
+	//Volume is in hundredths of decibels, from 0 to -10000
+
+	lVolume = clamp(lVolume, (int32_t)-10000, (int32_t)0);
+	return (float)pow(10.0, lVolume / 2000.0);
+}
+
+void SOUNDBUFFER::SetVolume(int32_t lVolume)
+{
+	float vol = MillibelToVolume(lVolume);
+	volume = (vol * 127);
+	
+	//SCHANNEL_CR(channelId) = SCHANNEL_ENABLE | SOUND_FORMAT_8BIT | SOUND_VOL(lVolume);
+	if (channelId == -1) return;
+	soundSetVolume(channelId, volume);
+}
+
+void SOUNDBUFFER::SetPan(int32_t lPan)
+{
+	pan = (int)((double)lPan / 512.0 * 127.0); // pan_tbl max to nds 127 pan max
+	if (channelId == -1) return;
+	soundSetPan(channelId, pan);
+}
+
+int played = false;
+
+void SOUNDBUFFER::Play(bool bLooping)
+{
+
+	if (!data) return;
+	playing = true;
+	looping = bLooping;
+
+	if (channelId != -1 && size < 257 && !looping) 
+	{
+		//org for some reason sends a play message without looping for stopping..
+		//so it is better to just cut it off here rather than start a new sound
+		soundKill(channelId);
+		channelStates[channelId] = 0;
+		channelId = -1;
+		return;
+	}
+	if (channelId == -1)
+	{
+		channelId = getFreeChannel();
+	}
+
+	if(channelId == -1) return;
+	channelStates[channelId] = 1;
+
+	//printf() pan
+
+	soundPlaySampleC(data, SoundFormat_8Bit, (u32)size, (u16)frequency, (u8)volume, (u8)pan, looping, (u16)0, channelId);
+	timer = 0;
+}
+
+void SOUNDBUFFER::Stop()
+{
+	playing = false;
+	if(channelId != -1) soundKill(channelId);
+	channelStates[channelId] = false;
+	channelId = -1;
+}
+
+
+
+
+
+
+
 
 //DirectSound interface
-BOOL InitDirectSound(HWND hwnd)
+BOOL InitDirectSound(void)
 {
-	//Create DirectSound object
-	if (DirectSoundCreate(NULL, &lpDS, NULL) != DS_OK)
-		return FALSE;
-	lpDS->SetCooperativeLevel(hwnd, DSSCL_EXCLUSIVE);
-
-	//Create primary sound buffer
-	DSBUFFERDESC dsbd;
-	ZeroMemory(&dsbd, sizeof(dsbd));
-	dsbd.dwSize = sizeof(dsbd);
-	dsbd.dwFlags = DSBCAPS_PRIMARYBUFFER;
-	lpDS->CreateSoundBuffer(&dsbd, &lpPRIMARYBUFFER, NULL);
+	soundEnable();
 
 	//Clear secondary sound buffers
 	for (int i = 0; i < SE_MAX; i++)
@@ -51,12 +251,6 @@ void EndDirectSound()
 		lpPRIMARYBUFFER = NULL;
 	}
 
-	//Release DirectSound object
-	if (lpDS != NULL)
-	{
-		lpDS->Release();
-		lpDS = NULL;
-	}
 }
 
 //Sound object creation and release
@@ -69,38 +263,43 @@ void ReleaseSoundObject(int no)
 	}
 }
 
-BOOL InitSoundObject(LPCSTR resname, int no)
+BOOL InitSoundObject(const char* resname, int no)
 {
-	//Find and lock resource
-	HRSRC hrscr;
-	if ((hrscr = FindResource(NULL, resname, "WAVE")) == NULL)
-		return FALSE;
-	DWORD *lpdword = (DWORD*)LockResource(LoadResource(NULL, hrscr));
 
-	//Create sound buffer
-	DSBUFFERDESC dsbd;
-	memset(&dsbd, 0, sizeof(DSBUFFERDESC));
-	dsbd.dwSize = sizeof(DSBUFFERDESC);
-	dsbd.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLFREQUENCY | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_GLOBALFOCUS;
-	dsbd.dwBufferBytes = *(DWORD*)((BYTE*)lpdword + 0x36);
-	dsbd.lpwfxFormat = (LPWAVEFORMATEX)(lpdword + 5);
-	if (lpDS->CreateSoundBuffer(&dsbd, &lpSECONDARYBUFFER[no], NULL) != DS_OK)
-		return FALSE;
+    //Get file path
+    char path[MAX_PATH];
+    sprintf(path, "%s/Wave/%03d.ptw", gModulePath, no);
+    
+    //Open file
+    FILE *fp = fopen(path, "rb");
+    if (fp == NULL)
+        return FALSE;
+    
+    //Read file
+    size_t size = File_ReadLE32(fp);
+    signed char *data = (signed char *)malloc(size);
+    if (data == NULL)
+    {
+        fclose(fp);
+        return FALSE;
+    }
+    fread(data, size, 1, fp);
+    fclose(fp);
+    
+    //Create buffer
+    lpSECONDARYBUFFER[no] = new SOUNDBUFFER(size);
+    if (lpSECONDARYBUFFER[no] == NULL)
+        return FALSE;
+    
 
-	//Lock sound buffer
-	LPVOID lpbuf1, lpbuf2;
-	DWORD dwbuf1, dwbuf2;
-	lpSECONDARYBUFFER[no]->Lock(0, *(DWORD*)((BYTE*)lpdword + 0x36),
-		&lpbuf1, &dwbuf1, &lpbuf2, &dwbuf2, 0);
-
-	//Copy data
-	memcpy(lpbuf1, (BYTE*)lpdword + 0x3A, dwbuf1);
-	if (dwbuf2 != 0)
-		memcpy(lpbuf2, (BYTE*)lpdword + 0x3A + dwbuf1, dwbuf2);
-	
-	//Unlock sound buffer
-	lpSECONDARYBUFFER[no]->Unlock(lpbuf1, dwbuf1, lpbuf2, dwbuf2);
-	return TRUE;
+    //Upload data to buffer
+    s8 *buf;
+    lpSECONDARYBUFFER[no]->Lock(&buf, NULL);
+    memcpy(buf, data, size);
+    lpSECONDARYBUFFER[no]->Unlock();
+    lpSECONDARYBUFFER[no]->SetFrequency(22050);
+	free(data);
+    return TRUE;
 }
 
 void PlaySoundObject(int no, int mode)
@@ -116,11 +315,11 @@ void PlaySoundObject(int no, int mode)
 			case SOUND_MODE_PLAY: //Play
 				lpSECONDARYBUFFER[no]->Stop();
 				lpSECONDARYBUFFER[no]->SetCurrentPosition(0);
-				lpSECONDARYBUFFER[no]->Play(0, 0, 0);
+				lpSECONDARYBUFFER[no]->Play(false);
 				break;
 
 			case SOUND_MODE_PLAY_LOOP: //Play looped
-				lpSECONDARYBUFFER[no]->Play(0, 0, DSBPLAY_LOOPING);
+				lpSECONDARYBUFFER[no]->Play(true);
 				break;
 		}
 	}
@@ -145,7 +344,6 @@ void ChangeSoundPan(int no, long pan) //512 is MAX and 256 is normal
 }
 
 //PiyoPiyo sound
-WAVEFORMATEX format_tbl2 = {WAVE_FORMAT_PCM, 1, 22050, 22050, 1, 8, 0};
 int freq_tbl[12] = { 1551, 1652, 1747, 1848, 1955, 2074, 2205, 2324, 2461, 2616, 2770, 2938 };
 
 BOOL MakePiyoPiyoSoundObject(CHAR *wave, BYTE *envelope, int octave, int data_size, int no)
@@ -154,17 +352,9 @@ BOOL MakePiyoPiyoSoundObject(CHAR *wave, BYTE *envelope, int octave, int data_si
 	int i;
 
 	//Construct sound buffers
-	DSBUFFERDESC dsbd;
-	memset(&dsbd, 0, sizeof(DSBUFFERDESC));
-	dsbd.dwSize = sizeof(dsbd);
-	dsbd.dwBufferBytes = data_size;
-	dsbd.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY | DSBCAPS_STICKYFOCUS;
-	dsbd.lpwfxFormat = &format_tbl2;
-	
 	for (i = 0; i < 24; i++)
 	{
-		if (lpDS->CreateSoundBuffer(&dsbd, &lpSECONDARYBUFFER[no + i], NULL) != DS_OK)
-			return FALSE;
+		lpSECONDARYBUFFER[no + i] = new SOUNDBUFFER(data_size);
 	}
 	
 	//Write sound data
@@ -195,25 +385,13 @@ BOOL MakePiyoPiyoSoundObject(CHAR *wave, BYTE *envelope, int octave, int data_si
 			wp_sub += freq;
 		}
 		
-		//Lock sound buffer
-		LPVOID lpbuf1, lpbuf2;
-		DWORD dwbuf1, dwbuf2 = 0;
-		
-		HRESULT hr = lpSECONDARYBUFFER[no + i]->Lock(0, data_size, &lpbuf1, &dwbuf1, &lpbuf2, &dwbuf2, 0);
-		if (hr != DS_OK)
-		{
-			result = FALSE;
-			break;
-		}
-		
-		//Copy waveform
-		memset(lpbuf1, 0, data_size);
-		memcpy(lpbuf1, wp, dwbuf1);
-		if (dwbuf2 != 0)
-			memcpy(lpbuf2, wp + dwbuf1, dwbuf2);
-		
-		//Unlock sound buffer
-		lpSECONDARYBUFFER[no + i]->Unlock(lpbuf1, dwbuf1, lpbuf2, dwbuf2);
+			//Lock sound buffer
+		    //Upload data to buffer
+    		s8 *buf;
+   			lpSECONDARYBUFFER[no]->Lock(&buf, NULL);
+   			memcpy(buf, wp, data_size);
+    		lpSECONDARYBUFFER[no]->Unlock();
+    		lpSECONDARYBUFFER[no]->SetFrequency(22050);
 	}
 	
 	//Check if there was an error and free wave buffer

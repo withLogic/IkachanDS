@@ -1,6 +1,6 @@
 #pragma once
 #include "NpChar.h"
-#include <windows.h>
+//#include <windows.h>
 
 struct MAP
 {
@@ -23,7 +23,7 @@ struct FRAME
 	int x, y;
 };
 
-BOOL LoadMapData(LPCTSTR path, MAP *map);
+BOOL LoadMapData(const char* path, MAP *map);
 void PutBack(FRAME *frame);
 void PutMapBack(MAP *map, int fx, int fy);
 void PutMapFront(MAP *map, int fx, int fy);

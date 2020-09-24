@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Sound.h"
 #include <stdio.h>
+#include <cstring>
 
 //NPC initialization
 void InitNpChar(NPCHAR *npc)
@@ -855,7 +856,7 @@ void HitMyCharNpChar(NPCHAR *npc, EVENT_SCR *event_scr, CARET_SPAWNER *caret_spa
 BOOL ReloadNpChar(NPCHAR *npc)
 {
 	//Open NPChar.dat
-	TCHAR path[MAX_PATH];
+	char path[MAX_PATH];
 	sprintf(path, "%s\\%s", gModulePath, "NPChar.dat");
 	
 	FILE *fp = fopen(path, "rb");

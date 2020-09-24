@@ -1,5 +1,49 @@
 #pragma once
-#include <windows.h>
+//#include <windows.h>
+#include "WindowsWrapper.h"
+#include "nds/ndstypes.h"
+
+class SOUNDBUFFER
+{
+	public:
+		SOUNDBUFFER(size_t bufSize);
+		~SOUNDBUFFER();
+		
+		void Release();
+		
+		void Lock(s8 **buffer, size_t *size);
+		void Unlock();
+		
+		void SetCurrentPosition(uint32_t dwNewPosition);
+		void SetFrequency(uint32_t dwFrequency);
+		void SetVolume(int32_t lVolume);
+		void SetPan(int32_t lPan);
+		void Play(bool bLooping);
+		void Stop();
+		
+		void Mix(long *stream, uint32_t samples);
+		
+		SOUNDBUFFER *next;
+	
+	public:
+		s8 *data;
+		size_t size;
+		
+		bool playing;
+		bool looping;
+		bool looped;
+		
+		int timer;
+
+		int frequency;
+		int volume;
+		int pan;
+		
+		int samplePosition;
+
+		signed char channelId;
+};
+
 
 enum SOUND_ID
 {
@@ -29,10 +73,10 @@ enum SOUND_MODE
 	SOUND_MODE_PLAY = 1
 };
 
-BOOL InitDirectSound(HWND hwnd);
+BOOL InitDirectSound(void);
 void EndDirectSound();
 void ReleaseSoundObject(int no);
-BOOL InitSoundObject(LPCSTR resname, int no);
+BOOL InitSoundObject(const char* resname, int no);
 void PlaySoundObject(int no, int mode);
 void ChangeSoundFrequency(int no, DWORD rate);
 void ChangeSoundVolume(int no, long volume);

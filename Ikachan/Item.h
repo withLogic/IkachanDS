@@ -1,6 +1,6 @@
 #pragma once
-#include <windows.h>
-
+//#include <windows.h>
+#include "WindowsWrapper.h"
 #define MAX_ITEMS (10)
 
 struct ITEMS

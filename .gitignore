@@ -82,3 +82,12 @@ ipch/
 /Ikachan.depend
 /Ikachan.mpp
 /Ikachan/*.aps
+
+
+/srcarm7/build
+
+*.elf
+*.nds
+
+*.d
+*.o

@@ -1,5 +1,6 @@
 #pragma once
-#include <windows.h>
+//#include <windows.h>
+#include "WindowsWrapper.h"
 
 struct PIYOPIYO_CONTROL
 {

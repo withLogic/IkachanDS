@@ -1,11 +1,46 @@
 #pragma once
-#include <windows.h>
+//#include <windows.h>
 #include "System.h"
+#include "WindowsWrapper.h"
+#include "nds.h"
 
 #define SURFACE_WIDTH  (320)
 #define SURFACE_HEIGHT (240)
 
-enum SURFACE_ID
+static const u8 font_space[32*3] = {
+    2,2,4,8,6,8,7,2,4,4,8,6,3,6,2,4,6,3,6,6,7,6,6,6,6,6,2,3,4,6,4,5,
+    8,6,6,6,6,5,5,6,6,2,5,6,5,6,6,6,6,6,6,5,6,6,6,6,6,6,5,4,4,4,4,6,
+    3,6,6,6,6,6,5,6,6,2,4,5,3,8,6,6,6,6,5,5,5,6,6,6,6,6,6,5,2,5,6,4,
+};
+
+struct BUFFER_PIXEL
+{
+	char color;
+};
+
+struct SURFACE
+{
+	int w;
+	int h;
+	int textureid;
+	int xoffset;
+	int yoffset;
+	int paletteOffset; //offset from palette vram banks
+	int paletteAddress; //real address of palette in memory
+	GL_TEXTURE_TYPE_ENUM paletteType;
+	int palettesize;
+	BUFFER_PIXEL *data;
+	u16* palette;
+	char name[16];
+};
+
+
+#define MAX_SURFACE 512
+extern SURFACE surf[MAX_SURFACE];
+
+
+
+enum SurfaceID
 {
 	SURFACE_ID_STATUS = 0,
 	SURFACE_ID_MYCHAR = 2,
@@ -63,21 +98,35 @@ enum SURFACE_ID
 	SURFACE_ID_JUEL = 88,
 	SURFACE_ID_UFO = 89,
 	SURFACE_ID_IRONHEAD = 100,
+	SURFACE_ID_FONT = 101,
 };
 
 extern RECT grcFull;
 
-void SetClientOffset(int width, int height);
-BOOL Flip_SystemTask(HWND hWnd);
-BOOL StartDirectDraw(HWND hWnd, int wndSize);
-void EndDirectDraw(HWND hWnd);
-BOOL MakeSurface_File(LPCTSTR name, int surf_no);
+BOOL Flip_SystemTask(void);
+BOOL StartDirectDraw();
+void EndDirectDraw(void);
+void ReleaseSurface(SurfaceID s);
+BOOL MakeSurface_Resource(const char *name, int surf_no);
+BOOL MakeSurface_File(const char *name, int surf_no);
+BOOL ReloadBitmap_Resource(const char *name, int surf_no);
+BOOL ReloadBitmap_File(const char *name, int surf_no);
 BOOL MakeSurface_Generic(int bxsize, int bysize, int surf_no);
-void BackupSurface(int surf_no, const RECT *rect);
-void PutBitmap3(const RECT *rcView, int x, int y, const RECT *rect, int surf_no);
-void CortBox(const RECT *rect, DWORD col);
-void CortBox2(const RECT *rect, DWORD col, int surf_no);
-void InitTextObject(LPCTSTR name);
-void PutText(int x, int y, LPCTSTR text, DWORD color);
-void PutText2(int x, int y, LPCTSTR text, DWORD color, int surf_no);
-void EndTextObject();
+void BackupSurface(SurfaceID surf_no, RECT *rect);
+void CopyFaceTexture(int face);
+void PutBitmap3(RECT *rcView, int x, int y, RECT *rect, int surf_no);
+void PutBitmap4(RECT *rcView, int x, int y, RECT *rect, int surf_no);
+void Surface2Surface(int x, int y, RECT *rect, int to, int from);
+void Surface2Texture(int x, int y, RECT *rect, int to, int from);
+unsigned long GetCortBoxColor(unsigned long col);
+void CortBox(RECT *rect, unsigned long col);
+void CortBox2(RECT *rect, unsigned long col, int surf_no);
+int RestoreSurfaces(void);
+void InitTextObject();
+int GetTextSpacing(const char *text);
+void PutText(int x, int y, const char *text, unsigned long color);
+void PutText2(int x, int y, const char *text, unsigned long color, int surf_no);
+void EndTextObject(void);
+BOOL CopyDataToTexture(int paletteType, int textureid, int surf_no,  int xoffset, int yoffset, RECT* rect);
+
+void glBegin2D( void );

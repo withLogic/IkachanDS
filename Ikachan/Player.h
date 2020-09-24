@@ -1,7 +1,8 @@
 #pragma once
 #include "Map.h"
 #include "Effect.h"
-#include <windows.h>
+//#include <windows.h>
+#include "WindowsWrapper.h"
 
 struct MYCHAR
 {
@@ -16,7 +17,7 @@ struct MYCHAR
 	char ani_no; //x14 x420DEC
 	//alignment x15
 	short ani_wait; //x16 x420DEE
-	WORD shock; //x18 x420DF0
+	short shock; //x18 x420DF0
 	short no_event; //x1A x420DF2
 	short life; //x1C x420DF4
 	short exp; //x1E x420DF6

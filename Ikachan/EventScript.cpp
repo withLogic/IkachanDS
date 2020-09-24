@@ -8,6 +8,8 @@
 #include "Editor.h"
 #include "Boss.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include "Generic.h"
 
 #define IS_COMMAND(c1, c2) (ptx->data[ptx->p_read] == '<' && ptx->data[ptx->p_read + 1] == (c1) && ptx->data[ptx->p_read + 2] == (c2))
 
@@ -247,21 +249,19 @@ void PutNumber2(int x, int y, int no)
 }
 
 //Some debug function I think
-void DebugPutText(LPCTSTR text)
+void DebugPutText(const char* text)
 {
 	PutText(0, 1, text, 0xFFFFFF);
 }
 
 //Read event script file
-BOOL ReadEventScript(LPCTSTR path, EVENT_SCR *ptx)
+BOOL ReadEventScript(const char* path, EVENT_SCR *ptx)
 {
 	//Get filesize
-	HANDLE hFile = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	ptx->size = GetFileSize(hFile, NULL);
-	CloseHandle(hFile);
+	ptx->size = GetFileSizeLong(path);
 	
 	//Allocate data
-	ptx->data = (LPSTR)LocalAlloc(LPTR, ptx->size + 1);
+	ptx->data = (char*)malloc(ptx->size + 1);
 	
 	//Open file
 	FILE *fp = fopen(path, "rt");
@@ -275,12 +275,12 @@ BOOL ReadEventScript(LPCTSTR path, EVENT_SCR *ptx)
 }
 
 //Saving
-LPCSTR save_magic = "ika_en03";
+const char* save_magic = "ika_en03";
 
 BOOL SaveRecord(ITEMS *items, MAP *map, NPCHAR *npc)
 {
 	//Open file
-	TCHAR path[MAX_PATH];
+	char path[MAX_PATH];
 	sprintf(path, "%s\\%s", gModulePath, "Ika.rec");
 	
 	FILE *fp = fopen(path, "wb");
@@ -327,7 +327,7 @@ BOOL SaveRecord(ITEMS *items, MAP *map, NPCHAR *npc)
 BOOL LoadRecord(ITEMS *items, MAP *map, NPCHAR *npc)
 {
 	//Open file
-	TCHAR path[MAX_PATH];
+	char path[MAX_PATH];
 	sprintf(path, "%s\\%s", gModulePath, "Ika.rec");
 	
 	FILE *fp = fopen(path, "rb");
@@ -429,7 +429,7 @@ void PutEventScriptCursor(EVENT_SCR *ptx)
 
 char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPIYO_CONTROL *piyocont, FADE *fade, FRAME *frame)
 {
-	TCHAR c[3] = { 0 };
+	char c[3] = { 0 };
 
 	switch (ptx->mode)
 	{
@@ -485,12 +485,12 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 			return 0;
 		case 5:
 			//Wait until Z is pressed before resuming execution
-			if (gKeyTrg & KEY_Z)
+			if (gKeyTrg & CEY_Z)
 				ptx->mode = 4;
 			return 0;
 		case 6:
 			//Wait until Z is pressed before resuming execution
-			if (gKeyTrg & KEY_Z)
+			if (gKeyTrg & CEY_Z)
 			{
 				ptx->wait = 0;
 				ptx->line = 0;
@@ -504,7 +504,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 			return 0;
 		case 7:
 			//Wait until Z is pressed before ending the script
-			if (!(gKeyTrg & KEY_Z))
+			if (!(gKeyTrg & CEY_Z))
 				return 0;
 			ptx->mode = 0;
 			ptx->msg_box = 0;
@@ -521,19 +521,19 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 			PutBitmap3(&grcFull, (SURFACE_WIDTH / 2) + 24, (SURFACE_HEIGHT / 2) - 20, &rcYNNo, SURFACE_ID_YESNO);
 			
 			//Choose Yes/No
-			if (gKeyTrg & KEY_LEFT)
+			if (gKeyTrg & CEY_LEFT)
 			{
 				ptx->select = 0;
 				PlaySoundObject(SOUND_ID_READY, 1);
 			}
-			if (gKeyTrg & KEY_RIGHT)
+			if (gKeyTrg & CEY_RIGHT)
 			{
 				ptx->select = 1;
 				PlaySoundObject(SOUND_ID_READY, 1);
 			}
 			
 			//Select once Z is pressed
-			if (gKeyTrg & KEY_Z)
+			if (gKeyTrg & CEY_Z)
 			{
 				PlaySoundObject(SOUND_ID_DASH, 1);
 				if (ptx->select)
@@ -576,7 +576,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 			//Type wait
 			ptx->msg_box = 1;
 			ptx->wait = ptx->x1C;
-			if (gKey & KEY_Z)
+			if (gKey & CEY_Z)
 				ptx->wait = 0;
 			
 			//Type character
@@ -596,7 +596,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 			//Type wait
 			ptx->msg_box = 1;
 			ptx->wait = ptx->x1C;
-			if (gKey & KEY_Z)
+			if (gKey & CEY_Z)
 				ptx->wait = 0;
 			
 			//Type character
@@ -616,7 +616,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 			//Type wait
 			ptx->msg_box = 1;
 			ptx->wait = ptx->x1C;
-			if (gKey & KEY_Z)
+			if (gKey & CEY_Z)
 				ptx->wait = 0;
 			
 			//Type character
@@ -639,7 +639,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				//Type wait
 				ptx->msg_box = 1;
 				ptx->wait = ptx->x1C;
-				if (gKey & KEY_Z)
+				if (gKey & CEY_Z)
 					ptx->wait = 0;
 				
 				//Type character

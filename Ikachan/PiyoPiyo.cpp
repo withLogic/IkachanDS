@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include <stdlib.h>
+
+#include "NDSSoundSpec.h"
+
 #define MAX_RECORD 1000
 
 struct PIYOPIYO_TRACKHEADER
@@ -82,32 +86,32 @@ BOOL InitPiyoPiyo()
 	InitSoundObject("SYMBAL1", 495);
 	
 	//Allocate buffers
-	gPiyoPiyo.record[0] = (DWORD*)LocalAlloc(LPTR, MAX_RECORD * 4);
-	gPiyoPiyo.record[1] = (DWORD*)LocalAlloc(LPTR, MAX_RECORD * 4);
-	gPiyoPiyo.record[2] = (DWORD*)LocalAlloc(LPTR, MAX_RECORD * 4);
-	gPiyoPiyo.record[3] = (DWORD*)LocalAlloc(LPTR, MAX_RECORD * 4);
+	gPiyoPiyo.record[0] = (DWORD*)malloc(MAX_RECORD * 4);
+	gPiyoPiyo.record[1] = (DWORD*)malloc(MAX_RECORD * 4);
+	gPiyoPiyo.record[2] = (DWORD*)malloc(MAX_RECORD * 4);
+	gPiyoPiyo.record[3] = (DWORD*)malloc(MAX_RECORD * 4);
 	
 	//Make sure buffers successfully allocated
 	if (gPiyoPiyo.record[0] == NULL || gPiyoPiyo.record[1] == NULL || gPiyoPiyo.record[2] == NULL || gPiyoPiyo.record[3] == NULL)
 	{
 		if (gPiyoPiyo.record[0] != NULL)
 		{
-			LocalFree((HLOCAL)gPiyoPiyo.record[0]);
+			free(gPiyoPiyo.record[0]);
 			gPiyoPiyo.record[0] = NULL;
 		}
 		if (gPiyoPiyo.record[1] != NULL)
 		{
-			LocalFree((HLOCAL)gPiyoPiyo.record[1]);
+			free(gPiyoPiyo.record[1]);
 			gPiyoPiyo.record[1] = NULL;
 		}
 		if (gPiyoPiyo.record[2] != NULL)
 		{
-			LocalFree((HLOCAL)gPiyoPiyo.record[2]);
+			free(gPiyoPiyo.record[2]);
 			gPiyoPiyo.record[2] = NULL;
 		}
 		if (gPiyoPiyo.record[3] != NULL)
 		{
-			LocalFree((HLOCAL)gPiyoPiyo.record[3]);
+			free(gPiyoPiyo.record[3]);
 			gPiyoPiyo.record[3] = NULL;
 		}
 	}
@@ -119,27 +123,27 @@ void EndPiyoPiyo()
 	//Release buffers
 	if (gPiyoPiyo.record[0] != NULL)
 	{
-		LocalFree((HLOCAL)gPiyoPiyo.record[0]);
+		free(gPiyoPiyo.record[0]);
 		gPiyoPiyo.record[0] = NULL;
 	}
 	if (gPiyoPiyo.record[1] != NULL)
 	{
-		LocalFree((HLOCAL)gPiyoPiyo.record[1]);
+		free(gPiyoPiyo.record[1]);
 		gPiyoPiyo.record[1] = NULL;
 	}
 	if (gPiyoPiyo.record[2] != NULL)
 	{
-		LocalFree((HLOCAL)gPiyoPiyo.record[2]);
+		free(gPiyoPiyo.record[2]);
 		gPiyoPiyo.record[2] = NULL;
 	}
 	if (gPiyoPiyo.record[3] != NULL)
 	{
-		LocalFree((HLOCAL)gPiyoPiyo.record[3]);
+		free(gPiyoPiyo.record[3]);
 		gPiyoPiyo.record[3] = NULL;
 	}
 }
 
-BOOL ReadPiyoPiyo(LPCTSTR path)
+BOOL ReadPiyoPiyo(const char* path)
 {
 	//Fail if PiyoPiyo hasn't been initialised
 	if (gPiyoPiyo.init == FALSE)
@@ -168,7 +172,7 @@ void PiyoPiyoProc()
 	};
 	
 	//Check if next step should be played
-	if (gPiyoPiyo.init && gPiyoPiyo.playing && GetTickCount() > (gPiyoPiyo.tick + gPiyoPiyo.header.wait))
+	if (gPiyoPiyo.init && gPiyoPiyo.playing && gPiyoPiyo.tick + SND_BUFFERSIZE > (gPiyoPiyo.tick + gPiyoPiyo.header.wait))
 	{
 		//Check if position passes loop point
 		if (++gPiyoPiyo.position > (gPiyoPiyo.header.end_x - 1) || gPiyoPiyo.position > (gPiyoPiyo.header.records - 1))
@@ -198,7 +202,7 @@ void PiyoPiyoProc()
 		}
 		
 		//Remember previous tick
-		gPiyoPiyo.tick = GetTickCount();
+		gPiyoPiyo.tick += SND_BUFFERSIZE;
 	}
 }
 
@@ -260,7 +264,7 @@ void ChangePiyoPiyoVolume(PIYOPIYO_CONTROL *piyocont)
 }
 
 //PiyoPiyo control
-LPTSTR gMusicList[6] =
+const char* gMusicList[6] =
 {
 	"Pmd\\Ikachan.pmd",
 	"Pmd\\Magirete.pmd",
@@ -289,7 +293,7 @@ void PiyoPiyoControl(PIYOPIYO_CONTROL *piyocont)
 					gPiyoPiyo.playing = FALSE;
 					
 					//Read given track
-					TCHAR path[MAX_PATH];
+					char path[MAX_PATH];
 					sprintf(path, "%s\\%s", gModulePath, gMusicList[piyocont->track]);
 					ReadPiyoPiyo(path);
 					MakePiyoPiyoSoundObjects();

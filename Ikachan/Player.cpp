@@ -530,13 +530,13 @@ void ActMyChar_Normal(CARET *caret, CARET_SPAWNER *caret_spawner)
 {
 	//Get direction
 	gMC.direct = 2;
-	if (gKey & KEY_LEFT)
+	if (gKey & CEY_LEFT)
 		gMC.direct = 0;
-	if (gKey & KEY_RIGHT)
+	if (gKey & CEY_RIGHT)
 		gMC.direct = 1;
 
 	//Swim
-	if ((gKeyTrg & KEY_Z) && gMC.swim_wait == 0)
+	if ((gKeyTrg & CEY_Z) && gMC.swim_wait == 0)
 	{
 		//Swim sound and bubble
 		int caret_i = FindCaret(caret);
@@ -579,7 +579,7 @@ void ActMyChar_Normal(CARET *caret, CARET_SPAWNER *caret_spawner)
 	}
 
 	//Dash
-	if ((gKey & KEY_Z) && (gMC.equip & 2))
+	if ((gKey & CEY_Z) && (gMC.equip & 2))
 	{
 		//Play charged sound
 		if (gMC.dash_wait == 31)

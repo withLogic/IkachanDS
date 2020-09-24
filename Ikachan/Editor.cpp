@@ -5,6 +5,11 @@
 #include "Sound.h"
 #include <stdio.h>
 
+typedef struct tagPOINT {
+  LONG x;
+  LONG y;
+} POINT, *PPOINT, *NPPOINT, *LPPOINT;
+
 BOOLEAN gEditorMode;
 short gEditorNPC;
 POINT gEditorCursor_Track;
@@ -17,7 +22,7 @@ void InitEditor()
 {
 	gEditorCursor_Track.x = (SURFACE_WIDTH / 2) - 16;
 	gEditorCursor_Track.y = (SURFACE_HEIGHT / 2) - 16;
-	SetCursorPos((SURFACE_WIDTH / 2) - 16, (SURFACE_HEIGHT / 2) - 16);
+	//SetCursorPos((SURFACE_WIDTH / 2) - 16, (SURFACE_HEIGHT / 2) - 16);
 	gEditorCursor_ScreenPos.x = (SURFACE_WIDTH / 2) - 16;
 	gEditorCursor_ScreenPos.y = (SURFACE_HEIGHT / 2) - 16;
 }
@@ -26,7 +31,7 @@ void PutEditorCursor()
 {
 	//Get cursor's position
 	POINT cur_pos;
-	GetCursorPos(&cur_pos);
+	//GetCursorPos(&cur_pos);
 	
 	//Move cursor
 	gEditorCursor_ScreenPos.x += cur_pos.x - gEditorCursor_Track.x;
@@ -279,7 +284,7 @@ void PutEditorNpcInfo(NPCHAR *npc)
 BOOL LoadNpChar(NPCHAR *npc)
 {
 	//Open NPChar.dat
-	TCHAR path[MAX_PATH];
+	char path[MAX_PATH];
 	sprintf(path, "%s\\%s", gModulePath, "NPChar.dat");
 	
 	FILE *fp = fopen(path, "rb");
@@ -305,7 +310,7 @@ BOOL LoadNpChar(NPCHAR *npc)
 BOOL SaveNpChar(NPCHAR *npc)
 {
 	//Open NPChar.dat
-	TCHAR path[MAX_PATH];
+	char path[MAX_PATH];
 	sprintf(path, "%s\\%s", gModulePath, "NPChar.dat");
 	
 	FILE *fp = fopen(path, "wb");

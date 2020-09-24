@@ -1,5 +1,6 @@
 #pragma once
-#include <windows.h>
+//#include <windows.h>
+#include "WindowsWrapper.h"
 
 #define MAX_CARETS (120)
 #define MAX_CARET_SPAWNERS (10)
@@ -15,7 +16,7 @@ struct CARET
   int xm;
   int ym;
   char ani_no;
-  WORD x16;
+  short x16;
   int ani_wait;
 };
 

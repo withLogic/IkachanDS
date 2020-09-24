@@ -1,8 +1,8 @@
 #pragma once
 #include "Map.h"
 #include "EventScript.h"
-#include <windows.h>
-
+//#include <windows.h>
+#include "WindowsWrapper.h"
 struct BOSS
 {
 	char cond;

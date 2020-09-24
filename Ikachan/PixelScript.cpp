@@ -1,6 +1,8 @@
 #include "PixelScript.h"
 #include "EventScript.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include "Generic.h"
 
 #define IS_COMMAND1(c1) (ptx->data[ptx->p_read] == '<' && ptx->data[ptx->p_read + 1] == (c1))
 #define IS_COMMAND2(c1, c2) (ptx->data[ptx->p_read] == '<' && ptx->data[ptx->p_read + 1] == (c1) && ptx->data[ptx->p_read + 2] == (c2))
@@ -9,15 +11,14 @@ RECT rcPsIllust = { 0, 0, 320, 240 };
 RECT rcPsEnd = { 0, 0, 48, 24 };
 RECT rcPsLine = { 0, 0, SURFACE_WIDTH, 16 };
 
-BOOL ReadPixelScript(PIX_SCR *ptx, LPCTSTR path)
+
+BOOL ReadPixelScript(PIX_SCR *ptx, const char* path)
 {
 	//Get filesize
-	HANDLE hFile = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	ptx->size = GetFileSize(hFile, NULL);
-	CloseHandle(hFile);
+	ptx->size = GetFileSizeLong(path);
 	
 	//Allocate data
-	ptx->data = (LPSTR)LocalAlloc(LPTR, ptx->size + 1);
+	ptx->data = (char*)malloc(ptx->size + 1);
 	
 	//Open file
 	FILE *fp = fopen(path, "rt");
@@ -30,7 +31,7 @@ BOOL ReadPixelScript(PIX_SCR *ptx, LPCTSTR path)
 	return TRUE;
 }
 
-void LoadPixelScript(PIX_SCR *ptx, LPCTSTR path, char scale)
+void LoadPixelScript(PIX_SCR *ptx, const char* path, char scale)
 {
 	//Initialize Pixel Script
 	ptx->end = FALSE;
@@ -50,7 +51,7 @@ void LoadPixelScript(PIX_SCR *ptx, LPCTSTR path, char scale)
 
 int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 {
-	TCHAR c[44];
+	char c[44];
 	
 	//Draw illustration
 	if (ending)
@@ -74,7 +75,7 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 
 			//Scroll line
 			ptx->ypos_line[i] -= 2;
-			if ((gKey & KEY_SPACE) || (gKey & KEY_Z))
+			if ((gKey & CEY_SPACE) || (gKey & CEY_Z))
 				ptx->ypos_line[i] -= 6;
 
 			//Check if line's scrolled over the top of the screen
@@ -161,5 +162,5 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 void EndPixelScript(PIX_SCR *ptx)
 {
 	//Release data
-	LocalFree((HLOCAL)ptx->data);
+	free(ptx->data);
 }

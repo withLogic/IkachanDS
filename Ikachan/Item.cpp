@@ -6,13 +6,15 @@
 #include "System.h"
 #include <string.h>
 
+#include <stdlib.h>
+
 BYTE item_equip[12] = { 0x00, 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x02, 0x00, 0x00, 0x08 };
 
 //Item inventory initialization and inventory drawing
 void InitItem(ITEMS *items)
 {
 	//Allocate items
-	items->code = (char*)LocalAlloc(LPTR, MAX_ITEMS * sizeof(char));
+	items->code = (char*)malloc( MAX_ITEMS * sizeof(char));
 
 	//Reset item codes
 	for (int i = 0; i < MAX_ITEMS; i++)
@@ -44,13 +46,13 @@ void PutItem(ITEMS *items)
 void MoveItem(ITEMS *items, EVENT_SCR *event_scr)
 {
 	//Move selection with left and right
-	if (gKeyTrg & KEY_LEFT)
+	if (gKeyTrg & CEY_LEFT)
 	{
 		PlaySoundObject(SOUND_ID_DASH, SOUND_MODE_PLAY);
 		if (--items->selected_item < 0)
 			items->selected_item = MAX_ITEMS - 1;
 	}
-	if (gKeyTrg & KEY_RIGHT)
+	if (gKeyTrg & CEY_RIGHT)
 	{
 		PlaySoundObject(SOUND_ID_DASH, SOUND_MODE_PLAY);
 		if (++items->selected_item >= MAX_ITEMS)
@@ -58,7 +60,7 @@ void MoveItem(ITEMS *items, EVENT_SCR *event_scr)
 	}
 	
 	//Display item description when Z is pressed
-	if (gKeyTrg & KEY_Z)
+	if (gKeyTrg & CEY_Z)
 	{
 		PlaySoundObject(SOUND_ID_DASH, SOUND_MODE_PLAY);
 		char code = items->code[items->selected_item];

@@ -1,9 +1,10 @@
 #pragma once
 #include "NpChar.h"
 #include "Map.h"
-#include <windows.h>
+//#include <windows.h>
+#include "WindowsWrapper.h"
 
-extern BOOLEAN gEditorMode;
+extern bool gEditorMode;
 extern short gEditorNPC;
 
 void InitEditor();

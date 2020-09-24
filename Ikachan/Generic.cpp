@@ -3,6 +3,25 @@
 #include "Sound.h"
 #include "PixelScript.h"
 #include <stdio.h>
+#include <cstring>
+
+long GetFileSizeLong(const char *path)
+{
+	long len;
+	FILE *fp;
+
+	len = 0;
+
+	fp = fopen(path, "rb");
+	if (fp == NULL)
+		return -1;
+
+	fseek(fp, 0, SEEK_END);
+	len = ftell(fp);
+	fclose(fp);
+	return len;
+}
+
 
 void GetCompileDate(int *year, int *month, int *day)
 {
@@ -36,6 +55,12 @@ void GetCompileDate(int *year, int *month, int *day)
 
 BOOL GetCompileVersion(int *v1, int *v2, int *v3, int *v4)
 {
+	*v1 = (unsigned short)1;
+	*v2 = (unsigned short)5;
+	*v3 = (unsigned short)2;
+	*v4 = (unsigned short)0;
+	return TRUE;
+	/*
 	unsigned int puLen;
 	VS_FIXEDFILEINFO *lpBuffer;
 	DWORD dwHandle;
@@ -74,12 +99,15 @@ fail:
 
 	if (lpData != NULL)
 		free(lpData);
-
+	
 	return bResult;
+	*/
 }
 
-BOOL OpenSoundVolume(HWND hWnd)
+BOOL OpenSoundVolume(void)
 {
+	return TRUE;
+	/*
 	//Get system directory...
 	char path[MAX_PATH];
 	GetSystemDirectory(path, sizeof(path));
@@ -106,6 +134,7 @@ BOOL OpenSoundVolume(HWND hWnd)
 		return FALSE;
 	else
 		return TRUE;
+	*/
 }
 
 void LoadGenericData()

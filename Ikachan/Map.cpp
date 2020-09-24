@@ -3,8 +3,31 @@
 #include "Player.h"
 #include "Boss.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <cstring>
 
-BOOL LoadMapData(LPCTSTR path, MAP *map)
+typedef struct tagBITMAPFILEHEADER {
+  WORD  bfType;
+  DWORD bfSize;
+  WORD  bfReserved1;
+  WORD  bfReserved2;
+  DWORD bfOffBits;
+} BITMAPFILEHEADER, *LPBITMAPFILEHEADER, *PBITMAPFILEHEADER;
+typedef struct tagBITMAPINFOHEADER {
+  DWORD biSize;
+  LONG  biWidth;
+  LONG  biHeight;
+  WORD  biPlanes;
+  WORD  biBitCount;
+  DWORD biCompression;
+  DWORD biSizeImage;
+  LONG  biXPelsPerMeter;
+  LONG  biYPelsPerMeter;
+  DWORD biClrUsed;
+  DWORD biClrImportant;
+} BITMAPINFOHEADER, *LPBITMAPINFOHEADER, *PBITMAPINFOHEADER;
+
+BOOL LoadMapData(const char* path, MAP *map)
 {
 	//Open file
 	FILE *fp = fopen(path, "rb");
@@ -237,30 +260,30 @@ void MoveFrameEditor(FRAME *frame, MAP *map)
 	static int holdt;
 	
 	//Shift frame when direction pressed
-	if (gKeyTrg & KEY_LEFT)
+	if (gKeyTrg & CEY_LEFT)
 		frame->x -= 0x1000;
-	if (gKeyTrg & KEY_RIGHT)
+	if (gKeyTrg & CEY_RIGHT)
 		frame->x += 0x1000;
-	if (gKeyTrg & KEY_UP)
+	if (gKeyTrg & CEY_UP)
 		frame->y -= 0x1000;
-	if (gKeyTrg & KEY_DOWN)
+	if (gKeyTrg & CEY_DOWN)
 		frame->y += 0x1000;
 
 	//Move frame while direction held for 20 frames
-	if (gKey & (KEY_LEFT | KEY_UP | KEY_RIGHT | KEY_DOWN))
+	if (gKey & (CEY_LEFT | CEY_UP | CEY_RIGHT | CEY_DOWN))
 	{
 		//Wait 20 frames
 		if (++holdt >= 20)
 		{
 			//Cap timer and move
 			holdt = 20;
-			if (gKey & KEY_LEFT)
+			if (gKey & CEY_LEFT)
 				frame->x -= 0x1000;
-			if (gKey & KEY_RIGHT)
+			if (gKey & CEY_RIGHT)
 				frame->x += 0x1000;
-			if (gKey & KEY_UP)
+			if (gKey & CEY_UP)
 				frame->y -= 0x1000;
-			if (gKey & KEY_DOWN)
+			if (gKey & CEY_DOWN)
 				frame->y += 0x1000;
 		}
 	}
