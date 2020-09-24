@@ -86,7 +86,7 @@ BOOL GetCompileVersion(int *v1, int *v2, int *v3, int *v4)
 	if (!GetFileVersionInfo(path, 0, dwLen, lpData))
 		goto fail;
 
-	if (!VerQueryValueA(lpData, "\\", (LPVOID*)&lpBuffer, &puLen))
+	if (!VerQueryValueA(lpData, "/", (LPVOID*)&lpBuffer, &puLen))
 		goto fail;
 
 	*v1 = (unsigned short)(lpBuffer->dwFileVersionMS >> 16);
@@ -114,17 +114,17 @@ BOOL OpenSoundVolume(void)
 
 	//Get first Sndvol32 path
 	char path2[MAX_PATH];
-	sprintf(path2, "%s\\Sndvol32.exe", path);
+	sprintf(path2, "%s/Sndvol32.exe", path);
 
 	//Cut off the file path...
 	size_t i = strlen(path);
-	while (path[i] != '\\')
+	while (path[i] != '/')
 		--i;
 	path[i] = '\0';
 
 	//And... uhhh... get another path to try to open from?
 	char path3[MAX_PATH];
-	sprintf(path3, "%s\\Sndvol32.exe", path);
+	sprintf(path3, "%s/Sndvol32.exe", path);
 
 	//Open Sndvol32 I guess?
 	INT_PTR error1 = (INT_PTR)ShellExecute(hWnd, "open", path2, NULL, NULL, SW_SHOW);
@@ -140,46 +140,46 @@ BOOL OpenSoundVolume(void)
 void LoadGenericData()
 {
 	//Load surfaces
-	MakeSurface_File("Pbm\\MyChar.pbm", SURFACE_ID_MYCHAR);
-	MakeSurface_File("Pbm\\MyChar2.pbm", SURFACE_ID_MYCHAR2);
-	MakeSurface_File("Pbm\\MyChar3.pbm", SURFACE_ID_MYCHAR3);
-	MakeSurface_File("Pbm\\MsgBox.pbm", SURFACE_ID_MSGBOX);
-	MakeSurface_File("Pbm\\Cursor.pbm", SURFACE_ID_CURSOR);
-	MakeSurface_File("Pbm\\YesNo.pbm", SURFACE_ID_YESNO);
-	MakeSurface_File("Pbm\\Status.pbm", SURFACE_ID_STATUS);
-	MakeSurface_File("Pbm\\Figure.pbm", SURFACE_ID_FIGURE);
-	MakeSurface_File("Pbm\\Item.pbm", SURFACE_ID_ITEM);
-	MakeSurface_File("Pbm\\ItemBox.pbm", SURFACE_ID_ITEMBOX);
-	MakeSurface_File("Pbm\\Loading.pbm", SURFACE_ID_LOADING);
-	MakeSurface_File("Pbm\\PrtBack.pbm", SURFACE_ID_PRTBACK);
-	MakeSurface_File("Pbm\\PrtFilt.pbm", SURFACE_ID_PRTFILT);
-	MakeSurface_File("Pbm\\PrtDir.pbm", SURFACE_ID_PRTDIR);
-	MakeSurface_File("Pbm\\PrtBlock.pbm", SURFACE_ID_PRTBLOCK);
-	MakeSurface_File("Pbm\\PrtDmg.pbm", SURFACE_ID_PRTDMG);
-	MakeSurface_File("Pbm\\PrtItem.pbm", SURFACE_ID_PRTITEM);
-	MakeSurface_File("Pbm\\PrtSnack.pbm", SURFACE_ID_PRTSNACK);
-	MakeSurface_File("Pbm\\Back.pbm", SURFACE_ID_BACK);
-	MakeSurface_File("Pbm\\Hari.pbm", SURFACE_ID_HARI);
-	MakeSurface_File("Pbm\\Isogin.pbm", SURFACE_ID_ISOGIN);
-	MakeSurface_File("Pbm\\Kani.pbm", SURFACE_ID_KANI);
-	MakeSurface_File("Pbm\\Sleep.pbm", SURFACE_ID_SLEEP);
-	MakeSurface_File("Pbm\\Chibi.pbm", SURFACE_ID_CHIBI);
-	MakeSurface_File("Pbm\\Hoshi.pbm", SURFACE_ID_HOSHI);
-	MakeSurface_File("Pbm\\Dum.pbm", SURFACE_ID_DUM);
-	MakeSurface_File("Pbm\\Carry.pbm", SURFACE_ID_CARRY);
-	MakeSurface_File("Pbm\\Juel.pbm", SURFACE_ID_JUEL);
-	MakeSurface_File("Pbm\\Ufo.pbm", SURFACE_ID_UFO);
-	MakeSurface_File("Pbm\\Ironhead.pbm", SURFACE_ID_IRONHEAD);
-	MakeSurface_File("Pbm\\Star.pbm", SURFACE_ID_STAR);
-	MakeSurface_File("Pbm\\Bubble.pbm", SURFACE_ID_BUBBLE);
-	MakeSurface_File("Pbm\\Damage.pbm", SURFACE_ID_DAMAGE);
-	MakeSurface_File("Pbm\\LevelUp.pbm", SURFACE_ID_LEVELUP);
-	MakeSurface_File("Pbm\\Editor.pbm", SURFACE_ID_EDITOR);
-	MakeSurface_File("Pbm\\NpcType.pbm", SURFACE_ID_NPCTYPE);
-	MakeSurface_File("Pbm\\Opening.pbm", SURFACE_ID_OPENING);
-	MakeSurface_File("Pbm\\MaruAme.pbm", SURFACE_ID_MARUAME);
-	MakeSurface_File("Pbm\\Staff.pbm", SURFACE_ID_STAFF);
-	MakeSurface_File("Pbm\\End.pbm", SURFACE_ID_END);
+	MakeSurface_File("Pbm/MyChar.pbm", SURFACE_ID_MYCHAR);
+	MakeSurface_File("Pbm/MyChar2.pbm", SURFACE_ID_MYCHAR2);
+	MakeSurface_File("Pbm/MyChar3.pbm", SURFACE_ID_MYCHAR3);
+	MakeSurface_File("Pbm/MsgBox.pbm", SURFACE_ID_MSGBOX);
+	MakeSurface_File("Pbm/Cursor.pbm", SURFACE_ID_CURSOR);
+	MakeSurface_File("Pbm/YesNo.pbm", SURFACE_ID_YESNO);
+	MakeSurface_File("Pbm/Status.pbm", SURFACE_ID_STATUS);
+	MakeSurface_File("Pbm/Figure.pbm", SURFACE_ID_FIGURE);
+	MakeSurface_File("Pbm/Item.pbm", SURFACE_ID_ITEM);
+	MakeSurface_File("Pbm/ItemBox.pbm", SURFACE_ID_ITEMBOX);
+	MakeSurface_File("Pbm/Loading.pbm", SURFACE_ID_LOADING);
+	MakeSurface_File("Pbm/PrtBack.pbm", SURFACE_ID_PRTBACK);
+	MakeSurface_File("Pbm/PrtFilt.pbm", SURFACE_ID_PRTFILT);
+	MakeSurface_File("Pbm/PrtDir.pbm", SURFACE_ID_PRTDIR);
+	MakeSurface_File("Pbm/PrtBlock.pbm", SURFACE_ID_PRTBLOCK);
+	MakeSurface_File("Pbm/PrtDmg.pbm", SURFACE_ID_PRTDMG);
+	MakeSurface_File("Pbm/PrtItem.pbm", SURFACE_ID_PRTITEM);
+	MakeSurface_File("Pbm/PrtSnack.pbm", SURFACE_ID_PRTSNACK);
+	MakeSurface_File("Pbm/Back.pbm", SURFACE_ID_BACK);
+	MakeSurface_File("Pbm/Hari.pbm", SURFACE_ID_HARI);
+	MakeSurface_File("Pbm/Isogin.pbm", SURFACE_ID_ISOGIN);
+	MakeSurface_File("Pbm/Kani.pbm", SURFACE_ID_KANI);
+	MakeSurface_File("Pbm/Sleep.pbm", SURFACE_ID_SLEEP);
+	MakeSurface_File("Pbm/Chibi.pbm", SURFACE_ID_CHIBI);
+	MakeSurface_File("Pbm/Hoshi.pbm", SURFACE_ID_HOSHI);
+	MakeSurface_File("Pbm/Dum.pbm", SURFACE_ID_DUM);
+	MakeSurface_File("Pbm/Carry.pbm", SURFACE_ID_CARRY);
+	MakeSurface_File("Pbm/Juel.pbm", SURFACE_ID_JUEL);
+	MakeSurface_File("Pbm/Ufo.pbm", SURFACE_ID_UFO);
+	MakeSurface_File("Pbm/Ironhead.pbm", SURFACE_ID_IRONHEAD);
+	MakeSurface_File("Pbm/Star.pbm", SURFACE_ID_STAR);
+	MakeSurface_File("Pbm/Bubble.pbm", SURFACE_ID_BUBBLE);
+	MakeSurface_File("Pbm/Damage.pbm", SURFACE_ID_DAMAGE);
+	MakeSurface_File("Pbm/LevelUp.pbm", SURFACE_ID_LEVELUP);
+	MakeSurface_File("Pbm/Editor.pbm", SURFACE_ID_EDITOR);
+	MakeSurface_File("Pbm/NpcType.pbm", SURFACE_ID_NPCTYPE);
+	MakeSurface_File("Pbm/Opening.pbm", SURFACE_ID_OPENING);
+	MakeSurface_File("Pbm/MaruAme.pbm", SURFACE_ID_MARUAME);
+	MakeSurface_File("Pbm/Staff.pbm", SURFACE_ID_STAFF);
+	MakeSurface_File("Pbm/End.pbm", SURFACE_ID_END);
 
 	//Make generic surfaces
 	MakeSurface_Generic(SURFACE_WIDTH, SURFACE_HEIGHT, SURFACE_ID_BACKUP);

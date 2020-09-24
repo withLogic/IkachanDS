@@ -16,7 +16,7 @@ BOOL SaveOption(OPTION *option)
 {
 	//Open option file
 	char path[MAX_PATH];
-	sprintf(path, "%s\\%s", gModulePath, gOptionName);
+	sprintf(path, "%s/%s", gModulePath, gOptionName);
 
 	FILE *fp = fopen(path, "wb");
 	if (fp == NULL)
@@ -35,7 +35,7 @@ BOOL LoadOption(OPTION *option)
 
 	//Open option file
 	char path[MAX_PATH];
-	sprintf(path, "%s\\%s", gModulePath, gOptionName);
+	sprintf(path, "%s/%s", gModulePath, gOptionName);
 
 	FILE *fp = fopen(path, "rb");
 	if (fp == NULL)

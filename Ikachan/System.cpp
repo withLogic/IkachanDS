@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 	rcFull.bottom = SURFACE_HEIGHT;
 
 	//Load the "LOADING" text
-	BOOL b = MakeSurface_File("Pbm\\Loading2.pbm", SURFACE_ID_LOADING2);
+	BOOL b = MakeSurface_File("Pbm/Loading2.pbm", SURFACE_ID_LOADING2);
 
 	//Draw loading screen
 	CortBox(&rcFull, 0x000000);
