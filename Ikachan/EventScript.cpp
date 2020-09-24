@@ -424,12 +424,13 @@ void PutEventScriptCursor(EVENT_SCR *ptx)
 		{ 64,  0, 72, 16 },
 		{ 72,  0, 80, 16 },
 	};
-	PutBitmap3(&grcFull, (SURFACE_WIDTH / 2) + 132, SURFACE_HEIGHT - 26, &rcCursor[(ptx->ani_cursor >> 2) % 8], SURFACE_ID_CURSOR);
+	PutBitmap3(&grcFull, (SURFACE_WIDTH / 2) + 116, SURFACE_HEIGHT - 26, &rcCursor[(ptx->ani_cursor >> 2) % 8], SURFACE_ID_CURSOR);
 }
-
+char cc[2][44] = { 0 };
+int char_pos = 0;;
 char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPIYO_CONTROL *piyocont, FADE *fade, FRAME *frame)
 {
-	char c[3] = { 0 };
+
 
 	switch (ptx->mode)
 	{
@@ -471,6 +472,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 					CortBox2(&rcLine, 0x000000, SURFACE_ID_TEXT1);
 					ptx->ypos_line[1] = 20;
 					ptx->line++;
+					char_pos = 0;
 					ptx->mode = 2;
 				}
 			}
@@ -480,6 +482,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				CortBox2(&rcLine, 0x000000, SURFACE_ID_TEXT0);
 				ptx->ypos_line[0] = 20;
 				ptx->line++;
+				char_pos = 0;
 				ptx->mode = 2;
 			}
 			return 0;
@@ -494,6 +497,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 			{
 				ptx->wait = 0;
 				ptx->line = 0;
+				char_pos = 0;
 				ptx->ypos_line[0] = 0;
 				ptx->ypos_line[1] = 20;
 				ptx->p_write = 0;
@@ -542,6 +546,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 					ptx->p_read += 4;
 					ptx->wait = 0;
 					ptx->line = 0;
+					char_pos = 0;
 					ptx->ypos_line[0] = 0;
 					ptx->ypos_line[1] = 20;
 					ptx->p_write = 0;
@@ -580,18 +585,18 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				ptx->wait = 0;
 			
 			//Type character
-			c[0] = ptx->data[ptx->p_read];
-			c[1] = ptx->data[ptx->p_read + 1];
+			cc[ptx->line % 2][0] = ptx->data[ptx->p_read];
+			cc[ptx->line % 2][1] = ptx->data[ptx->p_read + 1];
 			PlaySoundObject(SOUND_ID_MESSAGE, SOUND_MODE_PLAY);
-			PutText2((8 * ptx->p_write) + 1, 1, c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2));
-			PutText2(8 * ptx->p_write, 0, c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2));
+			//PutText2((8 * ptx->p_write) + 1, 1, c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2));
+			//PutText2(8 * ptx->p_write, 0, c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2));
 			ptx->p_write += 2;
 			ptx->p_read += 2;
 			return 0;
 		}
 		
 		//Print English alphabet
-		if (ptx->data[ptx->p_read] >= 'A' && ptx->data[ptx->p_read] <= 'z')
+		if (ptx->data[ptx->p_read] >= 'A' && ptx->data[ptx->p_read] <= 'z' || (ptx->data[ptx->p_read] == ' '))
 		{
 			//Type wait
 			ptx->msg_box = 1;
@@ -600,11 +605,11 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				ptx->wait = 0;
 			
 			//Type character
-			c[0] = ptx->data[ptx->p_read];
-			c[1] = 0;
+			cc[ptx->line % 2][char_pos] = ptx->data[ptx->p_read];
+			cc[ptx->line % 2][++char_pos] = 0;
 			PlaySoundObject(SOUND_ID_MESSAGE, SOUND_MODE_PLAY);
-			PutText2((8 * ptx->p_write) + 1, 1, c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2));
-			PutText2(8 * ptx->p_write, 0, c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2));
+			//PutText2((8 * ptx->p_write) + 1, 1, c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2));
+			//PutText2(8 * ptx->p_write, 0, c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2));
 			ptx->p_write++;
 			ptx->p_read++;
 			return 0;
@@ -620,11 +625,11 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				ptx->wait = 0;
 			
 			//Type character
-			c[0] = ptx->data[ptx->p_read];
-			c[1] = 0;
+			cc[ptx->line % 2][char_pos] = ptx->data[ptx->p_read];
+			cc[ptx->line % 2][++char_pos] = 0;
 			PlaySoundObject(SOUND_ID_MESSAGE, SOUND_MODE_PLAY);
-			PutText2((8 * ptx->p_write) + 1, 1, c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2));
-			PutText2(8 * ptx->p_write, 0, c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2));
+			//PutText2((8 * ptx->p_write) + 1, 1, c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2));
+			//PutText2(8 * ptx->p_write, 0, c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2));
 			ptx->p_write++;
 			ptx->p_read++;
 			return 0;
@@ -643,11 +648,11 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 					ptx->wait = 0;
 				
 				//Type character
-				c[0] = ptx->data[ptx->p_read];
-				c[1] = 0;
+				cc[ptx->line % 2][char_pos] = ptx->data[ptx->p_read];
+				cc[ptx->line % 2][++char_pos] = 0;
 				PlaySoundObject(SOUND_ID_MESSAGE, SOUND_MODE_PLAY);
-				PutText2((8 * ptx->p_write) + 1, 1, c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2));
-				PutText2(8 * ptx->p_write, 0, c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2));
+				//PutText2((8 * ptx->p_write) + 1, 1, c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2));
+				//PutText2(8 * ptx->p_write, 0, c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2));
 				ptx->p_write++;
 				ptx->p_read++;
 				return 0;
@@ -662,7 +667,10 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				if ((ptx->line % 2) || ptx->ypos_line[1] != 0)
 				{
 					if ((ptx->line % 2) != 1 || ptx->ypos_line[0] != 0)
+					{
 						++ptx->line;
+						char_pos = 0;
+					}
 					else
 						ptx->mode = 5;
 				}
@@ -1056,8 +1064,12 @@ void PutMsgBox(EVENT_SCR *ptx)
 	{
 		++ptx->ani_cursor;
 		PutBitmap3(&grcFull, (SURFACE_WIDTH / 2) - 152, SURFACE_HEIGHT - 56, &rcMsgBox, SURFACE_ID_MSGBOX);
-		PutBitmap3(&rcLineClip, (SURFACE_WIDTH / 2) - 136, (SURFACE_HEIGHT - 50) + ptx->ypos_line[0], &rcLine, SURFACE_ID_TEXT0);
-		PutBitmap3(&rcLineClip, (SURFACE_WIDTH / 2) - 136, (SURFACE_HEIGHT - 50) + ptx->ypos_line[1], &rcLine, SURFACE_ID_TEXT1);
+		PutText((SURFACE_WIDTH / 2) - 124 + 1, (SURFACE_HEIGHT - 50) + ptx->ypos_line[0] + 1,  cc[0], 0xFF0000);
+		PutText((SURFACE_WIDTH / 2) - 124, (SURFACE_HEIGHT - 50) + ptx->ypos_line[0],  cc[0], 0xFFFFFF);
+
+		PutText((SURFACE_WIDTH / 2) - 124 + 1, (SURFACE_HEIGHT - 50) + ptx->ypos_line[1] + 1,  cc[1], 0xFF0000);
+		PutText((SURFACE_WIDTH / 2) - 124, (SURFACE_HEIGHT - 50) + ptx->ypos_line[1],  cc[1], 0xFFFFFF);
+
 		if (ptx->mode == 5 || ptx->mode == 6 || ptx->mode == 7)
 			PutEventScriptCursor(ptx);
 	}

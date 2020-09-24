@@ -751,13 +751,13 @@ BOOL LoadBitmap(FILE *fp, int surf_no, bool create_surface)
 		case SURFACE_ID_STATUS:   xoffset = 768; yoffset = 416;    break;
 		case SURFACE_ID_MYCHAR:   xoffset = 640; yoffset = 120;    break;
 		case SURFACE_ID_FIGURE:   xoffset = 852; yoffset = 0;    break;
-		case SURFACE_ID_MSGBOX:   xoffset = 0; yoffset = 0;    break;
+		case SURFACE_ID_MSGBOX:   xoffset = 352; yoffset = 72;    break;
 		case SURFACE_ID_ITEMBOX:  xoffset = 544; yoffset = 40;     break;
 		case SURFACE_ID_ITEM:	xoffset = 352; yoffset = 40;	break;
 		case SURFACE_ID_BACK:	xoffset = 0; yoffset = 0;	break;
 		case SURFACE_ID_LOADING:  xoffset = 848; yoffset = 40;     break;
 		case SURFACE_ID_NPCTYPE:  xoffset = 928; yoffset = 120;     break;
-		case SURFACE_ID_CURSOR:   xoffset = 0; yoffset = 0;    break;
+		case SURFACE_ID_CURSOR:   xoffset = 0; yoffset = 169;    break;
 		case SURFACE_ID_EDITOR:   xoffset = 332; yoffset = 0;    break;
 		case SURFACE_ID_YESNO:	xoffset = 768; yoffset = 480;	break;
 		case SURFACE_ID_OPENING:   xoffset = 320; yoffset = 120;    break;
@@ -768,7 +768,7 @@ BOOL LoadBitmap(FILE *fp, int surf_no, bool create_surface)
 		case SURFACE_ID_END:	xoffset = 548; yoffset = 0;	break;
 		case SURFACE_ID_STAFF:   xoffset = 320; yoffset = 256;	break;
 		case SURFACE_ID_LOADING2:   xoffset = 880; yoffset = 40;    break;
-		case SURFACE_ID_STAR:	xoffset = 0; yoffset = 0;	break;
+		case SURFACE_ID_STAR:	xoffset = 768; yoffset = 408;	break;
 		case SURFACE_ID_BUBBLE:   xoffset = 64; yoffset = 0;    break;
 		case SURFACE_ID_DAMAGE:   xoffset = 204; yoffset = 0;    break;
 		case SURFACE_ID_LEVELUP:   xoffset = 784; yoffset = 40;    break;

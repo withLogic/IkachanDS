@@ -169,7 +169,7 @@ BOOL Game()
 	sprintf(path, "%s/%s", gModulePath, "Event.ptx");
 	if (!ReadEventScript(path, &event_scr))
 		return TRUE;
-	DebugPutText(event_scr.data);
+	//DebugPutText(event_scr.data);
 	
 	sprintf(path, "%s/%s", gModulePath, "Pbm/Map1.pbm");
 	if (!LoadMapData(path, &map))

@@ -46,12 +46,14 @@ void LoadPixelScript(PIX_SCR *ptx, const char* path, char scale)
 
 	//Read script
 	ReadPixelScript(ptx, path);
-	DebugPutText(ptx->data);
+	//DebugPutText(ptx->data);
 }
+
+char c[10][44];
 
 int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 {
-	char c[44];
+
 	
 	//Draw illustration
 	if (ending)
@@ -71,7 +73,8 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 		for (int i = 0; i < MAX_PSLINES; i++)
 		{
 			//Draw line
-			PutBitmap3(&grcFull, 0, ptx->ypos_line[i] / ptx->scale, &rcPsLine, SURFACE_ID_WORDS0 + i);
+			PutText(0, ptx->ypos_line[i] / ptx->scale + 1, c[i], RGB(0x00, 0x00, 0xFF));
+			PutText(0, ptx->ypos_line[i] / ptx->scale + 0, c[i], RGB(0x00, 0x88, 0xFF));
 
 			//Scroll line
 			ptx->ypos_line[i] -= 2;
@@ -91,14 +94,14 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 					if (ptx->data[ptx->p_read] == ' ')
 					{
 						//Type space
-						c[j] = ' ';
+						c[ptx->line][j] = ' ';
 						ptx->p_read++;
 					}
 					else if (ptx->data[ptx->p_read] & 0x80)
 					{
 						//Type Shift-JIS
-						c[j] = ptx->data[ptx->p_read];
-						c[++j] = ptx->data[ptx->p_read + 1];
+						c[ptx->line][j] = ptx->data[ptx->p_read];
+						c[ptx->line][++j] = ptx->data[ptx->p_read + 1];
 						ptx->p_read += 2;
 					}
 					else if (IS_COMMAND2('p','f'))
@@ -116,17 +119,17 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 					else if (ptx->data[ptx->p_read] >= 'A' && ptx->data[ptx->p_read] <= 'z')
 					{
 						//English alphabet
-						c[j] = ptx->data[ptx->p_read++];
+						c[ptx->line][j] = ptx->data[ptx->p_read++];
 					}
 					else if (ptx->data[ptx->p_read] >= '0' && ptx->data[ptx->p_read] <= '9')
 					{
 						//English numerals
-						c[j] = ptx->data[ptx->p_read++];
+						c[ptx->line][j] = ptx->data[ptx->p_read++];
 					}
 					else if (ptx->data[ptx->p_read] == '.' || ptx->data[ptx->p_read] == '/' || ptx->data[ptx->p_read] == ',')
 					{
 						//Other specific characters
-						c[j] = ptx->data[ptx->p_read++];
+						c[ptx->line][j] = ptx->data[ptx->p_read++];
 					}
 					else if (IS_COMMAND1('e'))
 					{
@@ -136,12 +139,10 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 					else if (ptx->data[ptx->p_read] == '+')
 					{
 						//Print text onto line
-						c[j] = 0;
-						PutText2(8, 1, c, 0xFF0000, SURFACE_ID_WORDS0 + ptx->line);
-						PutText2(8, 0, c, 0xFF8800, SURFACE_ID_WORDS0 + ptx->line);
+						c[ptx->line][j] = 0;
 						if (++ptx->line >= MAX_PSLINES)
 							ptx->line = 0;
-						ptx->p_read += 2;
+						ptx->p_read += 3; //CRLF
 						j = 999;
 					}
 					else
