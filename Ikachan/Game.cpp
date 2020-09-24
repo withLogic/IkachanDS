@@ -134,7 +134,7 @@ BOOL Game()
 	MakeSurface_File("Pbm/Fade.png", SURFACE_ID_FADE);
 	
 	//Start game (start in opening)
-	char mode = GAMEMODE_GAMEPLAY;
+	char mode = GAMEMODE_OPENING;
 	InitOpening(&opening);
 	char next_mode = mode;
 	

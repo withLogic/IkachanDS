@@ -328,7 +328,7 @@ BOOL LoadRecord(ITEMS *items, MAP *map, NPCHAR *npc)
 {
 	//Open file
 	char path[MAX_PATH];
-	sprintf(path, "%s/%s", gModulePath, "Ika.rec");
+	sprintf(path, "/%s", "Ika.rec");
 	
 	FILE *fp = fopen(path, "rb");
 	if (fp == NULL)
