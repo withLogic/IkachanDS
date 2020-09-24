@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <cstring>
 
+
+#pragma pack(push,1)
 typedef struct tagBITMAPFILEHEADER {
   WORD  bfType;
   DWORD bfSize;
@@ -26,6 +28,7 @@ typedef struct tagBITMAPINFOHEADER {
   DWORD biClrUsed;
   DWORD biClrImportant;
 } BITMAPINFOHEADER, *LPBITMAPINFOHEADER, *PBITMAPINFOHEADER;
+#pragma pack(pop)
 
 BOOL LoadMapData(const char* path, MAP *map)
 {

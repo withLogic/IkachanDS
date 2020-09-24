@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
 	
 
 	StartDirectDraw();
+	//consoleDemoInit();
 
 	RECT rcLoading = { 0, 0, 64, 8 };
 	RECT rcFull = { 0, 0, 0, 0 };

@@ -209,21 +209,21 @@ BOOL StartDirectDraw()
 		GL_TEXTURE_WRAP_S|GL_TEXTURE_WRAP_T|TEXGEN_OFF|GL_TEXTURE_COLOR0_TRANSPARENT,
 		NULL);
 
-	glGenTextures(1, &gAtlas16Color2);
+	/*glGenTextures(1, &gAtlas16Color2);
 	glBindTexture(0, gAtlas16Color2);
 	glTexImage2D(0,0, GL_RGB16, gTextureWidth1024, gTextureHeight256, 0,
 		GL_TEXTURE_WRAP_S|GL_TEXTURE_WRAP_T|TEXGEN_OFF|GL_TEXTURE_COLOR0_TRANSPARENT,
-		NULL);
+		NULL);*/
 
-	glGenTextures(1, &gAtlas256Color);
+	/*glGenTextures(1, &gAtlas256Color);
 	glBindTexture(0, gAtlas256Color);
 	glTexImage2D(0,0, GL_RGB16, gTextureWidth1024, gTextureHeight256, 0,
 		GL_TEXTURE_WRAP_S|GL_TEXTURE_WRAP_T|TEXGEN_OFF|GL_TEXTURE_COLOR0_TRANSPARENT,
-		NULL);
+		NULL);*/
 
 	videoSetModeSub( MODE_0_2D  );
 	vramSetBankI( VRAM_I_SUB_BG_0x06208000 );
-	//consoleInit( NULL, 0, BgType_Text4bpp, BgSize_T_256x256, 23, 2, false, true );
+	consoleInit( NULL, 0, BgType_Text4bpp, BgSize_T_256x256, 23, 2, false, true );
 	
 	
 	return TRUE;
@@ -742,94 +742,53 @@ BOOL LoadBitmap(FILE *fp, int surf_no, bool create_surface)
 
 	textureid = gAtlas16Color1;
 	RECT datarect = {0, 0, bitmap_width, bitmap_height};
-	/*
+	
 	switch(surf_no)
 	{
-		case SURFACE_ID_LEVEL_SPRITESET_1: // Guest will always be in spriteset 1 (don't change it)
-			break;
-		case SURFACE_ID_LEVEL_SPRITESET_2:
-			xoffset = 640;
-			textureid = gAtlas256Color;
-			break;
-		case SURFACE_ID_NPC_SYM:
-			xoffset = 640;
-			break;
-		case SURFACE_ID_CASTS:
-			xoffset = 256;
-			yoffset = 240;
-			break;
-		case SURFACE_ID_CREDITS_IMAGE:
-			xoffset = 574;
-			textureid = gAtlas16Color2;
-			break;
-		case SURFACE_ID_LEVEL_TILESET:
-			textureid = gAtlas16Color1;
-			yoffset = 240;
-			break;
-		case SURFACE_ID_TITLE:
-			break;
-		case SURFACE_ID_LOADING:
-			break;
-		case SURFACE_ID_PIXEL:
-			yoffset = 48;
-			break;
-		case SURFACE_ID_BULLET:
-			xoffset = 256;
-			yoffset = 184;
-			break;
-		case SURFACE_ID_ARMS:
-			xoffset = 576;
-			yoffset = 240;
-			break;
-		case SURFACE_ID_ITEM_IMAGE:
-			xoffset = 256;
-			yoffset = 360;
-			break;
-		case SURFACE_ID_ARMS_IMAGE:
-			xoffset = 512;
-			yoffset = 496;
-			break;
-		case SURFACE_ID_STAGE_ITEM:
-			xoffset = 256;
-			yoffset = 496;
-			break;
-		case SURFACE_ID_FADE:
-			yoffset = 480;
-			break;
-		case SURFACE_ID_NPC_REGU:
-			textureid = gAtlas256Color;
-			xoffset = 0;
-			break;
-		case SURFACE_ID_FACE:
-			xoffset = 0;
-			textureid = gAtlas16Color2;
-			goto facejump;
-			break;
-		case SURFACE_ID_LEVEL_BACKGROUND:
-			xoffset = 95,
-			textureid = gAtlas16Color2;
-			break;
-		case SURFACE_ID_CARET:
-			xoffset = 414;
-			textureid = gAtlas16Color2;
-			break;
-		case SURFACE_ID_TEXT_BOX:
-			xoffset = 734;
-			yoffset = 112;
-			textureid = gAtlas16Color2;
-			break;
-		case SURFACE_ID_FONT:
-			xoffset = 734;
-			yoffset = 64;
-			textureid = gAtlas16Color2;
-			break;
-		case SURFACE_ID_MY_CHAR:
-			xoffset = 734;
-			textureid = gAtlas16Color2;
-			break;
-		default:
-			break;
-	}*/
+		case SURFACE_ID_STATUS:   xoffset = 768; yoffset = 416;    break;
+		case SURFACE_ID_MYCHAR:   xoffset = 640; yoffset = 120;    break;
+		case SURFACE_ID_FIGURE:   xoffset = 852; yoffset = 0;    break;
+		case SURFACE_ID_MSGBOX:   xoffset = 0; yoffset = 0;    break;
+		case SURFACE_ID_ITEMBOX:  xoffset = 544; yoffset = 40;     break;
+		case SURFACE_ID_ITEM:	xoffset = 352; yoffset = 40;	break;
+		case SURFACE_ID_BACK:	xoffset = 0; yoffset = 0;	break;
+		case SURFACE_ID_LOADING:  xoffset = 848; yoffset = 40;     break;
+		case SURFACE_ID_NPCTYPE:  xoffset = 928; yoffset = 120;     break;
+		case SURFACE_ID_CURSOR:   xoffset = 0; yoffset = 0;    break;
+		case SURFACE_ID_EDITOR:   xoffset = 332; yoffset = 0;    break;
+		case SURFACE_ID_YESNO:	xoffset = 768; yoffset = 480;	break;
+		case SURFACE_ID_OPENING:   xoffset = 320; yoffset = 120;    break;
+		case SURFACE_ID_FADE:	xoffset = 596; yoffset = 0;	break;
+		case SURFACE_ID_MARUAME:   xoffset = 0; yoffset = 256;    break;
+		case SURFACE_ID_MYCHAR3:  xoffset = 768; yoffset = 120;     break;
+		case SURFACE_ID_MYCHAR2:  xoffset = 704; yoffset = 120;     break;
+		case SURFACE_ID_END:	xoffset = 548; yoffset = 0;	break;
+		case SURFACE_ID_STAFF:   xoffset = 320; yoffset = 256;	break;
+		case SURFACE_ID_LOADING2:   xoffset = 880; yoffset = 40;    break;
+		case SURFACE_ID_STAR:	xoffset = 0; yoffset = 0;	break;
+		case SURFACE_ID_BUBBLE:   xoffset = 64; yoffset = 0;    break;
+		case SURFACE_ID_DAMAGE:   xoffset = 204; yoffset = 0;    break;
+		case SURFACE_ID_LEVELUP:   xoffset = 784; yoffset = 40;    break;
+		case SURFACE_ID_PRTBACK:   xoffset = 768; yoffset = 0;    break;
+		case SURFACE_ID_PRTFILT:   xoffset = 768; yoffset = 320;    break;
+		case SURFACE_ID_PRTITEM:   xoffset = 768; yoffset = 336;    break;
+		case SURFACE_ID_PRTDIR:   xoffset = 768; yoffset = 272;    break;
+		case SURFACE_ID_PRTBLOCK: xoffset = 768; yoffset = 256;      break;
+		case SURFACE_ID_PRTDMG:   xoffset = 768; yoffset = 304;    break;
+		case SURFACE_ID_PRTSNACK: xoffset = 768; yoffset = 352;      break;
+		case SURFACE_ID_HARI:	xoffset = 932; yoffset = 0;	break;
+		case SURFACE_ID_ISOGIN:   xoffset = 192; yoffset = 40;    break;
+		case SURFACE_ID_KANI:	xoffset = 752; yoffset = 40;	break;
+		case SURFACE_ID_SLEEP:	xoffset = 0; yoffset = 368;	break;
+		case SURFACE_ID_CHIBI:	xoffset = 172; yoffset = 0;	break;
+		case SURFACE_ID_HOSHI:	xoffset = 0; yoffset = 40;	break;
+		case SURFACE_ID_DUM:	xoffset = 284; yoffset = 0;	break;
+		case SURFACE_ID_CARRY:	xoffset = 112; yoffset = 0;	break;
+		case SURFACE_ID_JUEL:	xoffset = 720; yoffset = 40;	break;
+		case SURFACE_ID_UFO:	xoffset = 768; yoffset = 448;	break;
+		case SURFACE_ID_IRONHEAD: xoffset = 64; yoffset = 40;      break;
+		case SURFACE_ID_FONT:	 xoffset = 0; yoffset = 0;	break;
+	}
 
 	if(!CopyDataToTexture(paletteType, textureid, surf_no, xoffset, yoffset, &datarect))
 	{
@@ -863,7 +822,7 @@ BOOL LoadBitmap_File(const char *name, int surf_no, bool create_surface)
 	//Attempt to load PNG
 	
 	char path[MAX_PATH];
-	sprintf(path, "%s/%s.png", gModulePath, name);
+	sprintf(path, "%s/%s", gModulePath, name);
 	
 	FILE *fp = fopen(path, "rb");
 	if (fp)

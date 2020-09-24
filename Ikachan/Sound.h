@@ -82,3 +82,4 @@ void ChangeSoundFrequency(int no, DWORD rate);
 void ChangeSoundVolume(int no, long volume);
 void ChangeSoundPan(int no, long pan);
 BOOL MakePiyoPiyoSoundObject(CHAR *wave, BYTE *envelope, int octave, int data_size, int no);
+void updateChannelStates(void);

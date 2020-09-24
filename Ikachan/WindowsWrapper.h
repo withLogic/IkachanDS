@@ -8,9 +8,9 @@ typedef bool BOOL;
 typedef bool BOOLEAN;
 typedef short WORD;
 typedef int DWORD;
-typedef char BYTE;
-typedef char CHAR;
-typedef int LONG;
+typedef unsigned char BYTE;
+typedef signed char CHAR;
+typedef long LONG;
 
 #define FALSE false
 #define TRUE true

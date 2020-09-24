@@ -58,8 +58,7 @@ PIYOPIYO gPiyoPiyo;
 BOOL InitPiyoPiyo()
 {
 	//Load drums
-	if (!InitSoundObject("BASS1", 472))
-		return FALSE;
+	InitSoundObject("BASS1", 472);
 	gPiyoPiyo.init = TRUE;
 	InitSoundObject("BASS1", 473);
 	InitSoundObject("BASS2", 474);
@@ -165,14 +164,16 @@ BOOL ReadPiyoPiyo(const char* path)
 	return TRUE;
 }
 
+int tick_count = 0;
+
 void PiyoPiyoProc()
 {
 	int pan_tbl[8] = {
 		0, 96, 180, 224, 256, 288, 332, 420
 	};
-	
 	//Check if next step should be played
-	if (gPiyoPiyo.init && gPiyoPiyo.playing && gPiyoPiyo.tick + SND_BUFFERSIZE > (gPiyoPiyo.tick + gPiyoPiyo.header.wait))
+	tick_count += SND_BUFFERSIZE;
+	if (gPiyoPiyo.init && gPiyoPiyo.playing && tick_count > (gPiyoPiyo.tick + gPiyoPiyo.header.wait))
 	{
 		//Check if position passes loop point
 		if (++gPiyoPiyo.position > (gPiyoPiyo.header.end_x - 1) || gPiyoPiyo.position > (gPiyoPiyo.header.records - 1))
@@ -202,8 +203,10 @@ void PiyoPiyoProc()
 		}
 		
 		//Remember previous tick
-		gPiyoPiyo.tick += SND_BUFFERSIZE;
+		gPiyoPiyo.tick = tick_count;
 	}
+	
+	updateChannelStates();	
 }
 
 void MakePiyoPiyoSoundObjects()

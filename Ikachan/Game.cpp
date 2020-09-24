@@ -98,7 +98,7 @@ BOOL Game()
 	FRAME frame;
 	PIYOPIYO_CONTROL piyocont;
 	DWORD tick;
-	
+
 	//Load generic data
 	LoadGenericData();
 	
@@ -131,7 +131,7 @@ BOOL Game()
 		caret[i].cond = FALSE;
 	
 	//Load fade surface here for some reason
-	MakeSurface_File("Pbm/Fade.pbm", SURFACE_ID_FADE);
+	MakeSurface_File("Pbm/Fade.png", SURFACE_ID_FADE);
 	
 	//Start game (start in opening)
 	char mode = GAMEMODE_OPENING;
@@ -142,8 +142,8 @@ BOOL Game()
 	piyocont.track = 3;
 	piyocont.mode = 1;
 	PiyoPiyoControl(&piyocont);
-	
 	//Opening
+
 	while (mode == GAMEMODE_OPENING)
 	{
 		//Start frame
@@ -163,6 +163,7 @@ BOOL Game()
 		if (!Flip_SystemTask())
 			return TRUE;
 		PiyoPiyoProc();
+		printf("a");
 	}
 	
 	//Load map event and data

@@ -24,10 +24,6 @@ SOUNDBUFFER* lpPRIMARYBUFFER;
 #define SE_MAX 512
 SOUNDBUFFER* lpSECONDARYBUFFER[SE_MAX];
 
-
-
-
-
 #define NUM_CHANNELS 16
 
 char channelStates[NUM_CHANNELS] = {0};
@@ -84,7 +80,7 @@ SOUNDBUFFER::SOUNDBUFFER(size_t bufSize)
 
 	timer = 0;
 	
-	frequency = 0;
+	frequency = 22050;
 	volume = 127;
 	pan = 63;
 	samplePosition = 0;
@@ -119,6 +115,7 @@ SOUNDBUFFER::~SOUNDBUFFER()
 void SOUNDBUFFER::Release()
 {
 	//TODO: find a better and more stable(?) way to handle this function
+	channelStates[channelId] = 0;
 	delete this;
 }
 
@@ -187,9 +184,11 @@ void SOUNDBUFFER::Play(bool bLooping)
 	{
 		//org for some reason sends a play message without looping for stopping..
 		//so it is better to just cut it off here rather than start a new sound
-		soundKill(channelId);
+		playing = false;
 		channelStates[channelId] = 0;
+		soundKill(channelId);
 		channelId = -1;
+		timer = 0;
 		return;
 	}
 	if (channelId == -1)
@@ -268,13 +267,14 @@ BOOL InitSoundObject(const char* resname, int no)
 
     //Get file path
     char path[MAX_PATH];
-    sprintf(path, "%s/Wave/%03d.ptw", gModulePath, no);
+    sprintf(path, "%s/Wave/%s.wavv", gModulePath, resname);
     
     //Open file
     FILE *fp = fopen(path, "rb");
     if (fp == NULL)
         return FALSE;
     
+	fseek(fp, 0x36, SEEK_SET);
     //Read file
     size_t size = File_ReadLE32(fp);
     signed char *data = (signed char *)malloc(size);
@@ -283,6 +283,7 @@ BOOL InitSoundObject(const char* resname, int no)
         fclose(fp);
         return FALSE;
     }
+	fseek(fp, 0x3A, SEEK_SET);
     fread(data, size, 1, fp);
     fclose(fp);
     
@@ -374,7 +375,7 @@ BOOL MakePiyoPiyoSoundObject(CHAR *wave, BYTE *envelope, int octave, int data_si
 			sample = sample * envelope[envelope_i] / 128;
 			
 			//Set sample
-			wp[j] = sample + 0x80;
+			wp[j] = sample;
 			
 			//Increase sub-pos
 			int freq;
@@ -385,13 +386,14 @@ BOOL MakePiyoPiyoSoundObject(CHAR *wave, BYTE *envelope, int octave, int data_si
 			wp_sub += freq;
 		}
 		
-			//Lock sound buffer
-		    //Upload data to buffer
-    		s8 *buf;
-   			lpSECONDARYBUFFER[no]->Lock(&buf, NULL);
-   			memcpy(buf, wp, data_size);
-    		lpSECONDARYBUFFER[no]->Unlock();
-    		lpSECONDARYBUFFER[no]->SetFrequency(22050);
+		//Lock sound buffer
+		//Upload data to buffer
+    	s8 *buf;
+   		lpSECONDARYBUFFER[no + i]->Lock(&buf, NULL);
+   		memcpy(buf, wp, data_size);
+    	lpSECONDARYBUFFER[no + i]->Unlock();
+    	lpSECONDARYBUFFER[no + i]->SetFrequency(22050);
+	
 	}
 	
 	//Check if there was an error and free wave buffer
