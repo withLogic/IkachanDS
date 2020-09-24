@@ -73,8 +73,8 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 		for (int i = 0; i < MAX_PSLINES; i++)
 		{
 			//Draw line
-			PutText(0, ptx->ypos_line[i] / ptx->scale + 1, c[i], RGB(0x00, 0x00, 0xFF));
-			PutText(0, ptx->ypos_line[i] / ptx->scale + 0, c[i], RGB(0x00, 0x88, 0xFF));
+			PutText(&grcFull, 0, ptx->ypos_line[i] / ptx->scale + 1, c[i], RGB(0x00, 0x00, 0xFF));
+			PutText(&grcFull, 0, ptx->ypos_line[i] / ptx->scale + 0, c[i], RGB(0x00, 0x88, 0xFF));
 
 			//Scroll line
 			ptx->ypos_line[i] -= 2;

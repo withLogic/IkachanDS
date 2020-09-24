@@ -251,7 +251,7 @@ void PutNumber2(int x, int y, int no)
 //Some debug function I think
 void DebugPutText(const char* text)
 {
-	PutText(0, 1, text, 0xFFFFFF);
+	PutText(&grcFull, 0, 1, text, 0xFFFFFF);
 }
 
 //Read event script file
@@ -1064,11 +1064,11 @@ void PutMsgBox(EVENT_SCR *ptx)
 	{
 		++ptx->ani_cursor;
 		PutBitmap3(&grcFull, (SURFACE_WIDTH / 2) - 152, SURFACE_HEIGHT - 56, &rcMsgBox, SURFACE_ID_MSGBOX);
-		PutText((SURFACE_WIDTH / 2) - 124 + 1, (SURFACE_HEIGHT - 50) + ptx->ypos_line[0] + 1,  cc[0], 0xFF0000);
-		PutText((SURFACE_WIDTH / 2) - 124, (SURFACE_HEIGHT - 50) + ptx->ypos_line[0],  cc[0], 0xFFFFFF);
+		PutText(&rcLineClip, (SURFACE_WIDTH / 2) - 124 + 1, (SURFACE_HEIGHT - 50) + ptx->ypos_line[0] + 1,  cc[0], 0xFF0000);
+		PutText(&rcLineClip, (SURFACE_WIDTH / 2) - 124, (SURFACE_HEIGHT - 50) + ptx->ypos_line[0],  cc[0], 0xFFFFFF);
 
-		PutText((SURFACE_WIDTH / 2) - 124 + 1, (SURFACE_HEIGHT - 50) + ptx->ypos_line[1] + 1,  cc[1], 0xFF0000);
-		PutText((SURFACE_WIDTH / 2) - 124, (SURFACE_HEIGHT - 50) + ptx->ypos_line[1],  cc[1], 0xFFFFFF);
+		PutText(&rcLineClip, (SURFACE_WIDTH / 2) - 124 + 1, (SURFACE_HEIGHT - 50) + ptx->ypos_line[1] + 1,  cc[1], 0xFF0000);
+		PutText(&rcLineClip, (SURFACE_WIDTH / 2) - 124, (SURFACE_HEIGHT - 50) + ptx->ypos_line[1],  cc[1], 0xFFFFFF);
 
 		if (ptx->mode == 5 || ptx->mode == 6 || ptx->mode == 7)
 			PutEventScriptCursor(ptx);
