@@ -356,48 +356,61 @@ BOOL MakePiyoPiyoSoundObject(CHAR *wave, BYTE *envelope, int octave, int data_si
 	{
 		lpSECONDARYBUFFER[no + i] = new SOUNDBUFFER(data_size);
 	}
-	
-	//Write sound data
-	BYTE *wp = (BYTE*)malloc(data_size);
-	
-	for (i = 0; i < 24; i++)
-	{
-		//Construct waveform
-		int wp_sub = 0;
-		int envelope_i = 0;
-		
-		for (int j = 0; j < data_size; j++)
-		{
-			//Get sample
-			int sample = wave[(BYTE)(wp_sub / 256)];
-			envelope_i = (j << 6) / data_size;
-			sample = sample * envelope[envelope_i] / 128;
-			
-			//Set sample
-			wp[j] = sample;
-			
-			//Increase sub-pos
-			int freq;
-			if (i < 12)
-				freq = octave * freq_tbl[i] / 16;
-			else
-				freq = octave * freq_tbl[i - 12] / 8;
-			wp_sub += freq;
-		}
-		
-		//Lock sound buffer
-		//Upload data to buffer
-    	s8 *buf;
+	   //Precalculate envelope
+    WORD *pre_env = (WORD*)malloc(data_size * sizeof(WORD));
+    WORD *pre_env_p = pre_env;
+    for (int j = 0; j < data_size; j++)
+        *pre_env_p++ = ((WORD)envelope[(j << 6) / data_size]) << 1;
+    
+    //Write sound data
+    WORD *wp = (WORD*)malloc(data_size * sizeof(WORD));
+    WORD *wpp;
+    
+    for (i = 0; i < 24; i++)
+    {
+        //Get frequency
+        int freq;
+        if (i < 12)
+            freq = octave * freq_tbl[i] / 16;
+        else
+            freq = octave * freq_tbl[i - 12] / 8;
+        
+        //Construct waveform
+        union
+        {
+            WORD word;
+            struct
+            {
+                BYTE lower;
+                BYTE upper;
+            } fixed;
+        } wp_sub = { 0 };
+        pre_env_p = pre_env;
+        wpp = wp;
+        
+        for (int j = 0; j < data_size; j++)
+        {
+            //Set sample and increment sub-pos
+            *wpp++ = (wave[wp_sub.fixed.upper]) * (*pre_env_p++);
+            wp_sub.word += freq;
+        }
+        s8 *buf;
    		lpSECONDARYBUFFER[no + i]->Lock(&buf, NULL);
-   		memcpy(buf, wp, data_size);
-    	lpSECONDARYBUFFER[no + i]->Unlock();
+
+        //Copy waveform
+        wpp = wp;
+        for (int v = 0; v < data_size; v++)
+            *buf++ = ((*wpp++ >> 8));
+        
+		lpSECONDARYBUFFER[no + i]->Unlock();
     	lpSECONDARYBUFFER[no + i]->SetFrequency(22050);
-	
-	}
-	
-	//Check if there was an error and free wave buffer
-	if (i == 24)
-		result = TRUE;
-	free(wp);
-	return result;
+        
+    }
+    
+    //Check if there was an error and free wave buffer
+    if (i == 24)
+        result = TRUE;
+    free(wp);
+    free(pre_env);
+    return result;
 }
