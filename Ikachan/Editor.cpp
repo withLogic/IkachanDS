@@ -311,7 +311,7 @@ BOOL SaveNpChar(NPCHAR *npc)
 {
 	//Open NPChar.dat
 	char path[MAX_PATH];
-	sprintf(path, "%s/%s", gModulePath, "NPChar.dat");
+	sprintf(path, "/%s", "NPChar.dat");
 	
 	FILE *fp = fopen(path, "wb");
 	if (fp == NULL)
