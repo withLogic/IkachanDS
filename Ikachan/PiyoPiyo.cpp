@@ -324,7 +324,8 @@ void PiyoPiyoControl(PIYOPIYO_CONTROL *piyocont)
 			case 4:
 				//Fade loaded track
 				piyocont->volume++;
-				ChangePiyoPiyoVolume(piyocont);
+				if(piyocont->volume % 8 == 0) // avoid lagging the heck out of yes
+					ChangePiyoPiyoVolume(piyocont);
 				
 				//Check if song should stop
 				if (piyocont->volume > 250)

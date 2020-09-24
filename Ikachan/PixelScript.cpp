@@ -112,7 +112,7 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 						piyocont->mode = 4;
 						j = 999;
 					}
-					else if (IS_COMMAND1('s'))
+					else if (IS_COMMAND2('e', 'n'))
 					{
 						//Bring up "END" text
 						ptx->end = TRUE;
@@ -143,12 +143,16 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 						c[ptx->line][j] = 0;
 						if (++ptx->line >= MAX_PSLINES)
 							ptx->line = 0;
-						ptx->p_read += 3; //CRLF
+						ptx->p_read += 1;
 						j = 999;
 					}
 					else
 					{
-						ptx->p_read++;
+						c[ptx->line][j] = 0;
+						if (++ptx->line >= MAX_PSLINES)
+							ptx->line = 0;
+						ptx->p_read += 1;
+						j = 999;
 					}
 				}
 			}
