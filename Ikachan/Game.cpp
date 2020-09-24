@@ -134,7 +134,7 @@ BOOL Game()
 	MakeSurface_File("Pbm/Fade.png", SURFACE_ID_FADE);
 	
 	//Start game (start in opening)
-	char mode = GAMEMODE_OPENING;
+	char mode = GAMEMODE_GAMEPLAY;
 	InitOpening(&opening);
 	char next_mode = mode;
 	
@@ -320,7 +320,7 @@ BOOL Game()
 				}
 				
 				//Draw player
-				if ((gMC.shock % 2) == 0 || event_scr.msg_box == TRUE)
+				//if ((gMC.shock % 2) == 0 || event_scr.msg_box == TRUE)
 					PutMyChar(&frame);
 			}
 			

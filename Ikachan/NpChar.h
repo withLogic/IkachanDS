@@ -13,7 +13,7 @@ struct NPCHAR
 	short code_event; //x4
 	short act_wait; //x6
 	char act_no; //x8
-	char ani_no; //x9
+	signed char ani_no; //x9
 	short ani_wait; //xA
 	char direct; //xC
 	BYTE flag; //xD

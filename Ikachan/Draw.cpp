@@ -106,6 +106,9 @@ void UpdateInput()
 	gKey |= (keys & KEY_START) ? CEY_S : 0 ;
 	
 	gKey |= (keys & KEY_X) ? CEY_SPACE : 0 ;
+
+	gMouse = 0;
+	gMouse |= (keys & KEY_TOUCH) ? MOUSE_LEFT : 0 ;
 }
 
 //Draw to screen
@@ -779,7 +782,7 @@ BOOL LoadBitmap(FILE *fp, int surf_no, bool create_surface)
 		case SURFACE_ID_HARI:	xoffset = 932; yoffset = 0;	break;
 		case SURFACE_ID_ISOGIN:   xoffset = 192; yoffset = 40;    break;
 		case SURFACE_ID_KANI:	xoffset = 752; yoffset = 40;	break;
-		case SURFACE_ID_SLEEP:	xoffset = 0; yoffset = 368;	break;
+		case SURFACE_ID_SLEEP:	xoffset = 768; yoffset = 368;	break;
 		case SURFACE_ID_CHIBI:	xoffset = 172; yoffset = 0;	break;
 		case SURFACE_ID_HOSHI:	xoffset = 0; yoffset = 40;	break;
 		case SURFACE_ID_DUM:	xoffset = 284; yoffset = 0;	break;
@@ -787,7 +790,7 @@ BOOL LoadBitmap(FILE *fp, int surf_no, bool create_surface)
 		case SURFACE_ID_JUEL:	xoffset = 720; yoffset = 40;	break;
 		case SURFACE_ID_UFO:	xoffset = 768; yoffset = 448;	break;
 		case SURFACE_ID_IRONHEAD: xoffset = 64; yoffset = 40;      break;
-		case SURFACE_ID_FONT:	 xoffset = 0; yoffset = 0;	break;
+		case SURFACE_ID_FONT:	 xoffset = 0; yoffset = 136;	break;
 	}
 
 	if(!CopyDataToTexture(paletteType, textureid, surf_no, xoffset, yoffset, &datarect))
@@ -1065,7 +1068,7 @@ void CortBox2(RECT *rect, uint32_t col, int surf_no)
 
 void InitTextObject()
 {
-	MakeSurface_File("smalfont", SURFACE_ID_FONT);
+	MakeSurface_File("Pbm/smalfont.png", SURFACE_ID_FONT);
 }
 
 static RECT GetFontRect(char character)

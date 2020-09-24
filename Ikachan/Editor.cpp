@@ -4,6 +4,7 @@
 #include "EventScript.h"
 #include "Sound.h"
 #include <stdio.h>
+#include "nds.h"
 
 typedef struct tagPOINT {
   LONG x;
@@ -25,19 +26,26 @@ void InitEditor()
 	//SetCursorPos((SURFACE_WIDTH / 2) - 16, (SURFACE_HEIGHT / 2) - 16);
 	gEditorCursor_ScreenPos.x = (SURFACE_WIDTH / 2) - 16;
 	gEditorCursor_ScreenPos.y = (SURFACE_HEIGHT / 2) - 16;
-}
 
+	lcdMainOnBottom();
+}
+touchPosition cur_pos;
 void PutEditorCursor()
 {
 	//Get cursor's position
-	POINT cur_pos;
-	//GetCursorPos(&cur_pos);
 	
+
+	
+	if (keysHeld() & KEY_TOUCH)
+	{
+		touchRead(&cur_pos);
+		gEditorCursor_ScreenPos.x += cur_pos.px - gEditorCursor_Track.x;
+		gEditorCursor_ScreenPos.y += cur_pos.py - gEditorCursor_Track.y;
+		gEditorCursor_Track.x = cur_pos.px;
+		gEditorCursor_Track.y = cur_pos.py;
+	}
 	//Move cursor
-	gEditorCursor_ScreenPos.x += cur_pos.x - gEditorCursor_Track.x;
-	gEditorCursor_ScreenPos.y += cur_pos.y - gEditorCursor_Track.y;
-	gEditorCursor_Track.x = cur_pos.x;
-	gEditorCursor_Track.y = cur_pos.y;
+
 	
 	//Draw cursor
 	static RECT rcCursor = { 0, 0, 32, 32 };
@@ -171,7 +179,7 @@ void EditorProc(NPCHAR *npc)
 					}
 				}
 			}
-			else if (gMouseTrg2 & MOUSE_RIGHT)
+			if (gKeyTrg & CEY_Z)
 			{
 				if (gEditorCursor_ScreenPos.x <= 8 ||
 					gEditorCursor_ScreenPos.x >= 224 ||
