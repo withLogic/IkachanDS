@@ -372,7 +372,7 @@ BOOL Game()
 			}
 			
 			//End frame
-			PutNumber(SURFACE_WIDTH - 48, 0, CountFramePerSecound());
+			//PutNumber(SURFACE_WIDTH - 48, 0, CountFramePerSecound());
 			if (!Flip_SystemTask())
 				return TRUE;
 			PiyoPiyoProc();

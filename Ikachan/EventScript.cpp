@@ -446,6 +446,9 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				CortBox2(&rcLine, 0x000000, SURFACE_ID_TEXT0);
 				CortBox2(&rcLine, 0x000000, SURFACE_ID_TEXT1);
 				ptx->mode = 2;
+				cc[0][0] = 0;
+				cc[1][0] = 0;
+				char_pos = 0;
 			}
 			else
 			{
@@ -470,6 +473,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				{
 					//Stopped on line 0
 					CortBox2(&rcLine, 0x000000, SURFACE_ID_TEXT1);
+					cc[1][0] = 0;
 					ptx->ypos_line[1] = 20;
 					ptx->line++;
 					char_pos = 0;
@@ -484,6 +488,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				ptx->line++;
 				char_pos = 0;
 				ptx->mode = 2;
+				cc[0][0] = 0;
 			}
 			return 0;
 		case 5:
@@ -504,6 +509,8 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				CortBox2(&rcLine, 0x000000, SURFACE_ID_TEXT0);
 				CortBox2(&rcLine, 0x000000, SURFACE_ID_TEXT1);
 				ptx->mode = 2;
+				cc[0][0] = 0;
+				cc[1][0] = 0;
 			}
 			return 0;
 		case 7:
@@ -552,6 +559,8 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 					ptx->p_write = 0;
 					CortBox2(&rcLine, 0x000000, SURFACE_ID_TEXT0);
 					CortBox2(&rcLine, 0x000000, SURFACE_ID_TEXT1);
+					cc[0][0] = 0;
+					cc[1][0] = 0;
 					ptx->mode = 2;
 				}
 				else
@@ -571,6 +580,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 
 	while (ptx->p_read < ptx->size)
 	{
+		if(char_pos >= 42) char_pos = 0;
 		//Skip past this specific character
 		if (ptx->data[ptx->p_read] == '~')
 			ptx->p_read++;
@@ -596,7 +606,9 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 		}
 		
 		//Print English alphabet
-		if (ptx->data[ptx->p_read] >= 'A' && ptx->data[ptx->p_read] <= 'z' || (ptx->data[ptx->p_read] == ' '))
+		if (ptx->data[ptx->p_read] >= 'A' && ptx->data[ptx->p_read] <= 'z' || (ptx->data[ptx->p_read] == ' ')
+			|| ptx->data[ptx->p_read] == '\'' || ptx->data[ptx->p_read] == '?' || ptx->data[ptx->p_read] == '!'
+			|| ptx->data[ptx->p_read] == '"' || ptx->data[ptx->p_read] == '*')
 		{
 			//Type wait
 			ptx->msg_box = 1;
@@ -640,7 +652,6 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 		{
 			case ',':
 			case '.':
-			case '/':
 				//Type wait
 				ptx->msg_box = 1;
 				ptx->wait = ptx->x1C;
@@ -680,6 +691,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				}
 				return 0;
 			case '{':
+			case '/':
 				//'NOD'
 				ptx->p_read += 2;
 				ptx->mode = 6;

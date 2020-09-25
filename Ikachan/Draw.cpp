@@ -96,10 +96,18 @@ void UpdateInput()
 	int keys = keysHeld();
 	gKey = 0;
 	
+
+#ifndef TWO_SCREENS
 	gKey |= (keys & KEY_UP) ? CEY_UP : 0 ;
 	gKey |= (keys & KEY_RIGHT) ? CEY_RIGHT : 0 ;
 	gKey |= (keys & KEY_DOWN) ? CEY_DOWN : 0 ;
 	gKey |= (keys & KEY_LEFT) ? CEY_LEFT : 0 ;
+#else
+	gKey |= (keys & KEY_UP) ? CEY_LEFT : 0 ;
+	gKey |= (keys & KEY_RIGHT) ? CEY_UP : 0 ;
+	gKey |= (keys & KEY_DOWN) ? CEY_RIGHT : 0 ;
+	gKey |= (keys & KEY_LEFT) ? CEY_DOWN : 0 ;
+#endif
 	
 	gKey |= (keys & KEY_A) ? CEY_Z : 0 ;
 	gKey |= (keys & KEY_B) ? CEY_X : 0 ;
@@ -110,6 +118,8 @@ void UpdateInput()
 	gMouse = 0;
 	gMouse |= (keys & KEY_TOUCH) ? MOUSE_LEFT : 0 ;
 }
+
+static int gCounter;
 
 //Draw to screen
 BOOL Flip_SystemTask()
@@ -126,9 +136,9 @@ BOOL Flip_SystemTask()
 
 	glBegin2D();
 
-	#ifdef TWO_SCREENS
+#ifdef TWO_SCREENS
 
-		if((gCounter & 1) == 0)
+		if((gCounter++ & 1) == 0)
 		{
 			lcdMainOnTop();
 			vramSetBankD(VRAM_D_LCD);
@@ -144,7 +154,6 @@ BOOL Flip_SystemTask()
 		}
 #endif
 
-	
 	return TRUE;
 }
 
@@ -223,11 +232,11 @@ BOOL StartDirectDraw()
 	glTexImage2D(0,0, GL_RGB16, gTextureWidth1024, gTextureHeight256, 0,
 		GL_TEXTURE_WRAP_S|GL_TEXTURE_WRAP_T|TEXGEN_OFF|GL_TEXTURE_COLOR0_TRANSPARENT,
 		NULL);*/
-
+#ifndef TWO_SCREENS
 	videoSetModeSub( MODE_0_2D  );
 	vramSetBankI( VRAM_I_SUB_BG_0x06208000 );
-	consoleInit( NULL, 0, BgType_Text4bpp, BgSize_T_256x256, 23, 2, false, true );
-	
+	//consoleInit( NULL, 0, BgType_Text4bpp, BgSize_T_256x256, 23, 2, false, true );
+#endif
 	
 	return TRUE;
 }

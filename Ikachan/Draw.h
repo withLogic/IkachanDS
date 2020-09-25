@@ -4,8 +4,13 @@
 #include "WindowsWrapper.h"
 #include "nds.h"
 
-#define SURFACE_WIDTH  (256)
-#define SURFACE_HEIGHT (192)
+#ifdef TWO_SCREENS
+#define SURFACE_WIDTH 384
+#define SURFACE_HEIGHT 256
+#else
+#define SURFACE_WIDTH 256
+#define SURFACE_HEIGHT 192
+#endif
 
 static const u8 font_space[32*3] = {
     2,2,4,8,6,8,7,2,4,4,8,6,3,6,2,4,6,3,6,6,7,6,6,6,6,6,2,3,4,6,4,5,
