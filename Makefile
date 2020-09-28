@@ -119,6 +119,8 @@ $(BUILD):
 clean:
 	@echo clean ...
 	@rm -f $(BUILD)/* $(TARGET).elf $(TARGET).nds
+	@make -C $(SOURCEARM7) clean
+
 
 #---------------------------------------------------------------------------------
 else

@@ -13,6 +13,8 @@
 #include <filesystem.h>
 #include "nds/fifocommon.h"
 
+#include "fat.h"
+
 //Keys
 DWORD gKey;
 DWORD gMouse;
@@ -41,10 +43,10 @@ int Random(int min, int max)
 
 int main(int argc, char *argv[])
 {
-	nitroFSInit(&argv[0]);
+	fatInitDefault();
 
 	//Get module path
-	strcpy(gModulePath, "nitro:/");
+	strcpy(gModulePath, "/");
 	
 
 	StartDirectDraw();

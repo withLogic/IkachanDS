@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include "nds.h"
 
+#include "fopen.h"
+
 typedef struct tagPOINT {
   LONG x;
   LONG y;
@@ -293,24 +295,24 @@ BOOL LoadNpChar(NPCHAR *npc)
 {
 	//Open NPChar.dat
 	char path[MAX_PATH];
-	sprintf(path, "%s/%s", gModulePath, "NPChar.dat");
+	sprintf(path, "%s", "NPChar.dat");
 	
-	FILE *fp = fopen(path, "rb");
+	FILE_e *fp = fopen_embed(path, "rb");
 	if (fp == NULL)
 		return FALSE;
 	
 	//Read NPC data
 	for (int i = 0; i < MAX_NPCS; i++)
 	{
-		fread(&npc[i].cond, 1, 1, fp);
-		fread(&npc[i].type, 1, 1, fp);
-		fread(&npc[i].code_char, 1, 1, fp);
-		fread(&npc[i].code_event, 2, 1, fp);
-		fread(&npc[i].direct, 1, 1, fp);
-		fread(&npc[i].x, 4, 1, fp);
-		fread(&npc[i].y, 4, 1, fp);
-		fread(&npc[i].tgt_x, 4, 1, fp);
-		fread(&npc[i].tgt_y, 4, 1, fp);
+		fread_embed(&npc[i].cond, 1, 1, fp);
+		fread_embed(&npc[i].type, 1, 1, fp);
+		fread_embed(&npc[i].code_char, 1, 1, fp);
+		fread_embed(&npc[i].code_event, 2, 1, fp);
+		fread_embed(&npc[i].direct, 1, 1, fp);
+		fread_embed(&npc[i].x, 4, 1, fp);
+		fread_embed(&npc[i].y, 4, 1, fp);
+		fread_embed(&npc[i].tgt_x, 4, 1, fp);
+		fread_embed(&npc[i].tgt_y, 4, 1, fp);
 	}
 	return TRUE;
 }

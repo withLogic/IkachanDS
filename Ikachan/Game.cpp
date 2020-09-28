@@ -166,12 +166,12 @@ BOOL Game()
 	}
 	
 	//Load map event and data
-	sprintf(path, "%s/%s", gModulePath, "Event.ptx");
+	sprintf(path, "%s", "Event.ptx");
 	if (!ReadEventScript(path, &event_scr))
 		return TRUE;
 	//DebugPutText(event_scr.data);
 	
-	sprintf(path, "%s/%s", gModulePath, "Pbm/Map1.pbm");
+	sprintf(path, "%s", "Pbm/Map1.pbm");
 	if (!LoadMapData(path, &map))
 		return TRUE;
 	
@@ -223,7 +223,7 @@ BOOL Game()
 	}
 	
 	//Load intro script
-	sprintf(path, "%s/%s", gModulePath, "Words.ptx");
+	sprintf(path, "%s", "Words.ptx");
 	LoadPixelScript(&pix_scr, path, 2);
 	
 	//Intro
@@ -446,7 +446,7 @@ BOOL Game()
 	PiyoPiyoControl(&piyocont);
 	
 	//Load staff script
-	sprintf(path, "%s/%s", gModulePath, "Staff.ptx");
+	sprintf(path, "%s", "Staff.ptx");
 	LoadPixelScript(&pix_scr, path, 4);
 	
 	//Staff

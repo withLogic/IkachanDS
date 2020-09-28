@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include "Generic.h"
 
+#include "fopen.h"
+
 #define IS_COMMAND1(c1) (ptx->data[ptx->p_read] == '<' && ptx->data[ptx->p_read + 1] == (c1))
 #define IS_COMMAND2(c1, c2) (ptx->data[ptx->p_read] == '<' && ptx->data[ptx->p_read + 1] == (c1) && ptx->data[ptx->p_read + 2] == (c2))
 
@@ -14,20 +16,19 @@ RECT rcPsLine = { 0, 0, SURFACE_WIDTH, 16 };
 
 BOOL ReadPixelScript(PIX_SCR *ptx, const char* path)
 {
-	//Get filesize
-	ptx->size = GetFileSizeLong(path);
-	
-	//Allocate data
-	ptx->data = (char*)malloc(ptx->size + 1);
-	
+
+
 	//Open file
-	FILE *fp = fopen(path, "rt");
+	FILE_e *fp = fopen_embed(path, "rt");
 	if (fp == NULL)
 		return FALSE;
+	//Allocate data
+	ptx->size = fp->size;
+	ptx->data = (char*)malloc(ptx->size + 1);
 	
 	//Read file
-	fread(ptx->data, ptx->size, 1, fp);
-	fclose(fp);
+	fread_embed(ptx->data, ptx->size, 1, fp);
+	fclose_embed(fp);
 	return TRUE;
 }
 

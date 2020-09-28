@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <cstring>
 
+#include "fopen.h"
+
 
 #pragma pack(push,1)
 typedef struct tagBITMAPFILEHEADER {
@@ -33,7 +35,7 @@ typedef struct tagBITMAPINFOHEADER {
 BOOL LoadMapData(const char* path, MAP *map)
 {
 	//Open file
-	FILE *fp = fopen(path, "rb");
+	FILE_e *fp = fopen_embed(path, "rb");
 	if (fp == NULL)
 		return FALSE;
 	
@@ -42,9 +44,9 @@ BOOL LoadMapData(const char* path, MAP *map)
 	BITMAPINFOHEADER bitmap_info_header;
 	DWORD bitmap_pal_data[0x100];
 
-	fread(&bitmap_file_header, sizeof(BITMAPFILEHEADER), 1, fp);
-	fread(&bitmap_info_header, sizeof(BITMAPINFOHEADER), 1, fp);
-	fread(bitmap_pal_data, 4, 0x100, fp);
+	fread_embed(&bitmap_file_header, sizeof(BITMAPFILEHEADER), 1, fp);
+	fread_embed(&bitmap_info_header, sizeof(BITMAPINFOHEADER), 1, fp);
+	fread_embed(bitmap_pal_data, 4, 0x100, fp);
 
 	//Verify file
 	if (bitmap_file_header.bfType != 0x4D42) //'BM' little endian
@@ -59,8 +61,8 @@ BOOL LoadMapData(const char* path, MAP *map)
 	
 	//Read data from file
 	BYTE *pre_buf = (BYTE*)malloc(bitmap_info_header.biWidth * bitmap_info_header.biHeight);
-	fread(pre_buf, 1, bitmap_info_header.biWidth * bitmap_info_header.biHeight, fp);
-	fclose(fp);
+	fread_embed(pre_buf, 1, bitmap_info_header.biWidth * bitmap_info_header.biHeight, fp);
+	fclose_embed(fp);
 	
 	//Copy data flipped vertically
 	int v13 = 0;

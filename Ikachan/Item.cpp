@@ -28,7 +28,7 @@ void PutItem(ITEMS *items)
 	RECT rcCursor = {32, 0, 48, 16};
 	
 	//Draw background and frame
-	PutBitmap3(&grcFull, 0, 0, &grcFull, SURFACE_ID_BACKUP);
+	//PutBitmap3(&grcFull, 0, 0, &grcFull, SURFACE_ID_BACKUP);
 	PutBitmap3(&grcFull, (SURFACE_WIDTH - 176) / 2, (SURFACE_HEIGHT / 2) + 8, &rcFrame, SURFACE_ID_ITEMBOX);
 
 	//Draw items

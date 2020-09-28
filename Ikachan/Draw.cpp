@@ -28,6 +28,8 @@
 #include "Game.h"
 #include "Sound.h"
 
+#include "fopen.h"
+
 RECT grcGame = {0, 0, SURFACE_WIDTH, SURFACE_HEIGHT};
 RECT grcFull = {0, 0, SURFACE_WIDTH, SURFACE_HEIGHT};
 
@@ -643,17 +645,12 @@ BOOL CopyDataToTexture(int paletteType, int textureid, int surf_no,  int xoffset
 	return TRUE;
 }
 
-BOOL LoadBitmap(FILE *fp, int surf_no, bool create_surface)
+BOOL LoadBitmap(FILE_e *fp, int surf_no, bool create_surface)
 {
-
-	struct stat file_descriptor;
-	long file_size;
-	
-	fstat(fileno(fp), &file_descriptor);
-	file_size = file_descriptor.st_size;
+	long file_size = fp->size;
 
 	unsigned char *file_buffer = (unsigned char*)malloc(file_size);
-	fread(file_buffer, file_size, 1, fp);
+	fread_embed(file_buffer, file_size, 1, fp);
 
 	unsigned int bitmap_width, bitmap_height;
 	unsigned char *bitmap_pixels;
@@ -804,7 +801,7 @@ BOOL LoadBitmap(FILE *fp, int surf_no, bool create_surface)
 
 	if(!CopyDataToTexture(paletteType, textureid, surf_no, xoffset, yoffset, &datarect))
 	{
-		fclose(fp);
+		fclose_embed(fp);
 		free(bitmap_pixels);
 		return TRUE;
 	}
@@ -821,7 +818,7 @@ facejump:
 	free(bitmap_pixels);
 	if(create_surface)
 		free(surf[surf_no].data);
-	fclose(fp);
+	fclose_embed(fp);
 	
 	return TRUE;
 }
@@ -834,9 +831,9 @@ BOOL LoadBitmap_File(const char *name, int surf_no, bool create_surface)
 	//Attempt to load PNG
 	
 	char path[MAX_PATH];
-	sprintf(path, "%s/%s", gModulePath, name);
+	sprintf(path, "%s", name);
 	
-	FILE *fp = fopen(path, "rb");
+	FILE_e *fp = fopen_embed(path, "rb");
 	if (fp)
 	{
 		printf("Loading surface (as .png) from %s for surface id %d\n", path, surf_no);

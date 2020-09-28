@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <cstring>
 
+#include "fopen.h"
+
 //NPC initialization
 void InitNpChar(NPCHAR *npc)
 {
@@ -857,9 +859,9 @@ BOOL ReloadNpChar(NPCHAR *npc)
 {
 	//Open NPChar.dat
 	char path[MAX_PATH];
-	sprintf(path, "%s/%s", gModulePath, "NPChar.dat");
+	sprintf(path, "%s", "NPChar.dat");
 	
-	FILE *fp = fopen(path, "rb");
+	FILE_e *fp = fopen_embed(path, "rb");
 	if (fp == NULL)
 		return FALSE;
 	
@@ -868,15 +870,15 @@ BOOL ReloadNpChar(NPCHAR *npc)
 	{
 		//Read individual NPC
 		NPCHAR event;
-		fread(&event.cond, 1, 1, fp);
-		fread(&event.type, 1, 1, fp);
-		fread(&event.code_char, 1, 1, fp);
-		fread(&event.code_event, 2, 1, fp);
-		fread(&event.direct, 1, 1, fp);
-		fread(&event.x, 4, 1, fp);
-		fread(&event.y, 4, 1, fp);
-		fread(&event.tgt_x, 4, 1, fp);
-		fread(&event.tgt_y, 4, 1, fp);
+		fread_embed(&event.cond, 1, 1, fp);
+		fread_embed(&event.type, 1, 1, fp);
+		fread_embed(&event.code_char, 1, 1, fp);
+		fread_embed(&event.code_event, 2, 1, fp);
+		fread_embed(&event.direct, 1, 1, fp);
+		fread_embed(&event.x, 4, 1, fp);
+		fread_embed(&event.y, 4, 1, fp);
+		fread_embed(&event.tgt_x, 4, 1, fp);
+		fread_embed(&event.tgt_y, 4, 1, fp);
 		
 		//Zero data that isn't read
 		event.act_wait = 0;

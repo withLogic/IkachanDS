@@ -5,21 +5,25 @@
 #include <stdio.h>
 #include <cstring>
 
+#include "fopen.h"
+
 long GetFileSizeLong(const char *path)
 {
+	/*
 	long len;
-	FILE *fp;
+	FILE_e *fp;
 
 	len = 0;
 
-	fp = fopen(path, "rb");
+	fp = fopen_embed(path, "rb");
 	if (fp == NULL)
 		return -1;
 
 	fseek(fp, 0, SEEK_END);
 	len = ftell(fp);
-	fclose(fp);
-	return len;
+	fclose_embed(fp);
+	return len;*/
+	return 0;
 }
 
 
@@ -143,7 +147,7 @@ void LoadGenericData()
 	MakeSurface_File("Pbm/MyChar.png", SURFACE_ID_MYCHAR);
 	MakeSurface_File("Pbm/MyChar2.png", SURFACE_ID_MYCHAR2);
 	MakeSurface_File("Pbm/MyChar3.png", SURFACE_ID_MYCHAR3);
-	MakeSurface_File("Pbm/MsgBox.png", SURFACE_ID_MSGBOX);
+	MakeSurface_File("Pbm/Msgbox.png", SURFACE_ID_MSGBOX);
 	MakeSurface_File("Pbm/Cursor.png", SURFACE_ID_CURSOR);
 	MakeSurface_File("Pbm/YesNo.png", SURFACE_ID_YESNO);
 	MakeSurface_File("Pbm/Status.png", SURFACE_ID_STATUS);

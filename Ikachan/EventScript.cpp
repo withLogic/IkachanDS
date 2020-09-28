@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include "Generic.h"
 
+#include "fopen.h"
+
 #define IS_COMMAND(c1, c2) (ptx->data[ptx->p_read] == '<' && ptx->data[ptx->p_read + 1] == (c1) && ptx->data[ptx->p_read + 2] == (c2))
 
 //Rects and other LUTs
@@ -258,19 +260,19 @@ void DebugPutText(const char* text)
 BOOL ReadEventScript(const char* path, EVENT_SCR *ptx)
 {
 	//Get filesize
-	ptx->size = GetFileSizeLong(path);
-	
-	//Allocate data
-	ptx->data = (char*)malloc(ptx->size + 1);
 	
 	//Open file
-	FILE *fp = fopen(path, "rt");
+	FILE_e *fp = fopen_embed(path, "rt");
 	if (fp == NULL)
 		return FALSE;
 	
+	ptx->size = fp->size;
+	//Allocate data
+	ptx->data = (char*)malloc(ptx->size + 1);
+
 	//Read file
-	fread(ptx->data, ptx->size, 1, fp);
-	fclose(fp);
+	fread_embed(ptx->data, ptx->size, 1, fp);
+	fclose_embed(fp);
 	return TRUE;
 }
 

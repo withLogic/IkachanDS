@@ -15,6 +15,8 @@
 
 #include "Generic.h"
 
+#include "fopen.h"
+
 #define clamp(x, y, z) ((x > z) ? z : (x < y) ? y : x)
 
 //DirectSound objects
@@ -267,24 +269,24 @@ BOOL InitSoundObject(const char* resname, int no)
 
     //Get file path
     char path[MAX_PATH];
-    sprintf(path, "%s/Wave/%s.raw", gModulePath, resname);
+    sprintf(path, "Wave/%s.raw", resname);
     
-	size_t size = GetFileSizeLong(path);
+	
     //Open file
-    FILE *fp = fopen(path, "rb");
+    FILE_e *fp = fopen_embed(path, "rb");
     if (fp == NULL)
         return FALSE;
-	
+	size_t size = fp->size;
     //Read file
     signed char *data = (signed char *)malloc(size);
     if (data == NULL)
     {
-        fclose(fp);
+        fclose_embed(fp);
         return FALSE;
     }
 
-    fread(data, size, 1, fp);
-    fclose(fp);
+    fread_embed(data, size, 1, fp);
+    fclose_embed(fp);
     
     //Create buffer
     lpSECONDARYBUFFER[no] = new SOUNDBUFFER(size);
