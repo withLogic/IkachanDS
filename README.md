@@ -7,8 +7,11 @@ Should be working with latest devkitPro and libs. To get sound working without a
 
 ## Thanks to
 Cucky - decompilation, font code, optimized MakePiyoPiyoObject
+
 devkitPro
+
 gl2d
+
 Pixel
 
 
