@@ -119,6 +119,11 @@ void UpdateInput()
 
 	gMouse = 0;
 	gMouse |= (keys & KEY_TOUCH) ? MOUSE_LEFT : 0 ;
+
+	if(keysDown() & KEY_SELECT)
+	{
+		lcdSwap();
+	}
 }
 
 static int gCounter;

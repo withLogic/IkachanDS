@@ -43,12 +43,6 @@ int Random(int min, int max)
 
 int main(int argc, char *argv[])
 {
-	scanKeys();
-	int keys = keysHeld();
-	if(keys & KEY_A)
-		lcdMainOnBottom();
-	scanKeys();
-
 	fatInitDefault();
 
 	//Get module path
