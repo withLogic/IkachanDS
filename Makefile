@@ -23,6 +23,11 @@ DATA		:=	data
 INCLUDES	:=	include
 SPRITES		:=  sprites
 
+GAME_TITLE := Ikachan
+GAME_SUBTITLE1 := github.com/tilderain/IkachanDS
+GAME_SUBTITLE2 := 
+GAME_ICON := $(CURDIR)/../icon.bmp
+
 
 NITRODATA	:=	game_english
 ifneq ($(strip $(NITRODATA)),)
@@ -52,7 +57,7 @@ LDFLAGS	=	-specs=ds_arm9.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -L$(SDL_LIB)
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project (order is important)
 #---------------------------------------------------------------------------------
-LIBS	:= 	-lfilesystem -lfat -lnds9 -lmm9
+LIBS	:= 	-lfilesystem -lfat -lnds9 
  
  
 #---------------------------------------------------------------------------------

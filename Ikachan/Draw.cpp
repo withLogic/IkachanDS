@@ -13,7 +13,7 @@
 //#include "Tags.h"
 
 #include "nds.h"
-#include <maxmod9.h>
+//#include <maxmod9.h>
 
 #include "malloc.h"
 
