@@ -1,4 +1,5 @@
 # Ikachan
+<img src="https://github.com/tilderain/IkachanDS/blob/master/preview.jpg">
 Ikachan (1.5.2) Decompilation (for Nintendo DS)
 
 ## Compilation
