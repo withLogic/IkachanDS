@@ -72,28 +72,6 @@ add_executable(${PROJECT_NAME}
   Ikachan/Sound.cpp
   #Ikachan/soundFifo.cpp
   Ikachan/System.cpp
-  Ikachan/vitaAudio/vitaAudio.c
-  Ikachan/vitaAudio/buffer/buffer.c
-  Ikachan/vitaAudio/wav/wav.c
-  Ikachan/vitaAudio/ogg/api/close.c
-  Ikachan/vitaAudio/ogg/api/info.c
-  Ikachan/vitaAudio/ogg/api/open-buffer.c
-  Ikachan/vitaAudio/ogg/api/open-callbacks.c
-  Ikachan/vitaAudio/ogg/api/open-file.c
-  Ikachan/vitaAudio/ogg/api/read-float.c
-  Ikachan/vitaAudio/ogg/api/read-int16.c
-  Ikachan/vitaAudio/ogg/api/seek-tell.c
-  Ikachan/vitaAudio/ogg/api/version.c
-  Ikachan/vitaAudio/ogg/decode/crc32.c
-  Ikachan/vitaAudio/ogg/decode/decode.c
-  Ikachan/vitaAudio/ogg/decode/io.c
-  Ikachan/vitaAudio/ogg/decode/packet.c
-  Ikachan/vitaAudio/ogg/decode/seek.c
-  Ikachan/vitaAudio/ogg/decode/setup.c
-  Ikachan/vitaAudio/ogg/decode/stb_vorbis.c
-  Ikachan/vitaAudio/ogg/util/decode-frame.c
-  Ikachan/vitaAudio/ogg/util/float-to-int16.c
-  Ikachan/vitaAudio/ogg/util/memory.c
 )
 
 # Library to link to (drop the -l prefix). This will mostly be stubs.

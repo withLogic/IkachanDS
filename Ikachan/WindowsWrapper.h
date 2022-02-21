@@ -19,7 +19,7 @@ typedef int16_t	s16;
 #define FALSE false
 #define TRUE true
 
-struct RECT
+struct RECT 
 {
 	long left;
 	long top;

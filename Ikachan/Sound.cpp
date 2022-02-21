@@ -3,16 +3,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
-extern "C" {
-    #include "vitaAudio/vitaAudio.h"
-}
-
 //DirectSound objects
-vaudio lpPRIMARYBUFFER;
 
 //DirectSound buffers
 #define SE_MAX 512
-vaudio lpSECONDARYBUFFER[SE_MAX];
 
 //Sound buffer code
 SOUNDBUFFER::SOUNDBUFFER(size_t bufSize)
