@@ -1,5 +1,5 @@
 # Ikachan
-<img src="https://github.com/tilderain/IkachanDS/blob/master/preview.jpg">
+<img src="https://raw.githubusercontent.com/withLogic/IkachanVita/master/sce_sys/pic0.png">
 Ikachan (1.5.2) Decompilation (for Sony Playstation Vita)
 
 ## Compilation
