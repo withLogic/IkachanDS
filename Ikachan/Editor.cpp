@@ -2,10 +2,10 @@
 #include "System.h"
 #include "Draw.h"
 #include "EventScript.h"
-#include "Sound.h"
+#include "Sound.h" 
 #include <stdio.h>
-#include "nds.h"
-
+// commenting out nds for now - mjn
+//#include "nds.h"
 #include "fopen.h"
 
 typedef struct tagPOINT {
@@ -28,26 +28,19 @@ void InitEditor()
 	//SetCursorPos((SURFACE_WIDTH / 2) - 16, (SURFACE_HEIGHT / 2) - 16);
 	gEditorCursor_ScreenPos.x = (SURFACE_WIDTH / 2) - 16;
 	gEditorCursor_ScreenPos.y = (SURFACE_HEIGHT / 2) - 16;
-
-	lcdMainOnBottom();
 }
-touchPosition cur_pos;
+
 void PutEditorCursor()
 {
 	//Get cursor's position
-	
 
-	
-	if (keysHeld() & KEY_TOUCH)
-	{
-		touchRead(&cur_pos);
-		gEditorCursor_ScreenPos.x += cur_pos.px - gEditorCursor_Track.x;
-		gEditorCursor_ScreenPos.y += cur_pos.py - gEditorCursor_Track.y;
-		gEditorCursor_Track.x = cur_pos.px;
-		gEditorCursor_Track.y = cur_pos.py;
-	}
 	//Move cursor
+	// commenting out cur_pos since I dont have that info - wl
 
+	//gEditorCursor_ScreenPos.x += cur_pos.x - gEditorCursor_Track.x;
+	//gEditorCursor_ScreenPos.y += cur_pos.y - gEditorCursor_Track.y;
+	//gEditorCursor_Track.x = cur_pos.x;
+	//gEditorCursor_Track.y = cur_pos.y;
 	
 	//Draw cursor
 	static RECT rcCursor = { 0, 0, 32, 32 };
@@ -295,24 +288,24 @@ BOOL LoadNpChar(NPCHAR *npc)
 {
 	//Open NPChar.dat
 	char path[MAX_PATH];
-	sprintf(path, "%s", "NPChar.dat");
+	sprintf(path, "%s//%s", gModulePath, "NPChar.dat");
 	
-	FILE_e *fp = fopen_embed(path, "rb");
+	FILE *fp = fopen(path, "rb");
 	if (fp == NULL)
 		return FALSE;
 	
 	//Read NPC data
 	for (int i = 0; i < MAX_NPCS; i++)
 	{
-		fread_embed(&npc[i].cond, 1, 1, fp);
-		fread_embed(&npc[i].type, 1, 1, fp);
-		fread_embed(&npc[i].code_char, 1, 1, fp);
-		fread_embed(&npc[i].code_event, 2, 1, fp);
-		fread_embed(&npc[i].direct, 1, 1, fp);
-		fread_embed(&npc[i].x, 4, 1, fp);
-		fread_embed(&npc[i].y, 4, 1, fp);
-		fread_embed(&npc[i].tgt_x, 4, 1, fp);
-		fread_embed(&npc[i].tgt_y, 4, 1, fp);
+		fread(&npc[i].cond, 1, 1, fp);
+		fread(&npc[i].type, 1, 1, fp);
+		fread(&npc[i].code_char, 1, 1, fp);
+		fread(&npc[i].code_event, 2, 1, fp);
+		fread(&npc[i].direct, 1, 1, fp);
+		fread(&npc[i].x, 4, 1, fp);
+		fread(&npc[i].y, 4, 1, fp);
+		fread(&npc[i].tgt_x, 4, 1, fp);
+		fread(&npc[i].tgt_y, 4, 1, fp);
 	}
 	return TRUE;
 }

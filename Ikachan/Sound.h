@@ -1,7 +1,7 @@
 #pragma once
-//#include <windows.h>
+#include <stdint.h>
 #include "WindowsWrapper.h"
-#include "nds/ndstypes.h"
+#include "System.h"
 
 class SOUNDBUFFER
 {
@@ -25,8 +25,7 @@ class SOUNDBUFFER
 		
 		SOUNDBUFFER *next;
 	
-	public:
-		s8 *data;
+		uint8_t *data;
 		size_t size;
 		
 		bool playing;
@@ -43,7 +42,6 @@ class SOUNDBUFFER
 
 		signed char channelId;
 };
-
 
 enum SOUND_ID
 {
@@ -73,7 +71,7 @@ enum SOUND_MODE
 	SOUND_MODE_PLAY = 1
 };
 
-BOOL InitDirectSound(void);
+BOOL InitDirectSound();
 void EndDirectSound();
 void ReleaseSoundObject(int no);
 BOOL InitSoundObject(const char* resname, int no);
@@ -82,4 +80,4 @@ void ChangeSoundFrequency(int no, DWORD rate);
 void ChangeSoundVolume(int no, long volume);
 void ChangeSoundPan(int no, long pan);
 BOOL MakePiyoPiyoSoundObject(CHAR *wave, BYTE *envelope, int octave, int data_size, int no);
-void updateChannelStates(void);
+int backgroundAudioThreadMethod(int args, void *argp);

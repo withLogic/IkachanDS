@@ -1,4 +1,5 @@
 #pragma once
+
 #include "NpChar.h"
 #include "Map.h"
 //#include <windows.h>

@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Generic.h"
-
 #include "fopen.h"
 
 #define IS_COMMAND(c1, c2) (ptx->data[ptx->p_read] == '<' && ptx->data[ptx->p_read + 1] == (c1) && ptx->data[ptx->p_read + 2] == (c2))
@@ -260,19 +259,22 @@ void DebugPutText(const char* text)
 BOOL ReadEventScript(const char* path, EVENT_SCR *ptx)
 {
 	//Get filesize
-	
+	printf("LoadEventScript_File %s\n", path);
 	//Open file
-	FILE_e *fp = fopen_embed(path, "rt");
+	FILE *fp = fopen(path, "rt");
 	if (fp == NULL)
 		return FALSE;
 	
-	ptx->size = fp->size;
 	//Allocate data
+	fseek(fp, 0, SEEK_END);
+	ptx->size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
 	ptx->data = (char*)malloc(ptx->size + 1);
 
 	//Read file
-	fread_embed(ptx->data, ptx->size, 1, fp);
-	fclose_embed(fp);
+	fread(ptx->data, ptx->size, 1, fp);
+	fclose(fp);
 	return TRUE;
 }
 
@@ -283,7 +285,7 @@ BOOL SaveRecord(ITEMS *items, MAP *map, NPCHAR *npc)
 {
 	//Open file
 	char path[MAX_PATH];
-	sprintf(path, "/%s", "Ika.rec");
+	sprintf(path, "%s//%s", gModulePath, "Ika.rec");
 	
 	FILE *fp = fopen(path, "wb");
 	if (fp == NULL)
@@ -330,7 +332,7 @@ BOOL LoadRecord(ITEMS *items, MAP *map, NPCHAR *npc)
 {
 	//Open file
 	char path[MAX_PATH];
-	sprintf(path, "/%s", "Ika.rec");
+	sprintf(path, "%s//%s", gModulePath, "Ika.rec");
 	
 	FILE *fp = fopen(path, "rb");
 	if (fp == NULL)

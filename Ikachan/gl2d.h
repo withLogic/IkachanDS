@@ -1,7 +1,7 @@
 #pragma once
 
 #include "WindowsWrapper.h"
-#include "nds.h"
+//#include "nds.h"
 #include "Draw.h"
 
 void glScreen2D( void );

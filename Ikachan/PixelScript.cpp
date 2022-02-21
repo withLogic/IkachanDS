@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Generic.h"
-
 #include "fopen.h"
 
 #define IS_COMMAND1(c1) (ptx->data[ptx->p_read] == '<' && ptx->data[ptx->p_read + 1] == (c1))
@@ -16,19 +15,20 @@ RECT rcPsLine = { 0, 0, SURFACE_WIDTH, 16 };
 
 BOOL ReadPixelScript(PIX_SCR *ptx, const char* path)
 {
-
-
 	//Open file
-	FILE_e *fp = fopen_embed(path, "rt");
+	FILE *fp = fopen(path, "rt");
 	if (fp == NULL)
 		return FALSE;
 	//Allocate data
-	ptx->size = fp->size;
+	fseek(fp, 0, SEEK_END);
+	ptx->size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
 	ptx->data = (char*)malloc(ptx->size + 1);
 	
 	//Read file
-	fread_embed(ptx->data, ptx->size, 1, fp);
-	fclose_embed(fp);
+	fread(ptx->data, ptx->size, 1, fp);
+	fclose(fp);
 	return TRUE;
 }
 
@@ -47,15 +47,13 @@ void LoadPixelScript(PIX_SCR *ptx, const char* path, char scale)
 
 	//Read script
 	ReadPixelScript(ptx, path);
-	//DebugPutText(ptx->data);
+	DebugPutText(ptx->data);
 }
 
 char c[10][44];
 
 int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
-{
-
-	
+{	
 	//Draw illustration
 	if (ending)
 		PutBitmap3(&grcFull, (SURFACE_WIDTH - 320) / 2, (SURFACE_HEIGHT - 240) / 2, &rcPsIllust, SURFACE_ID_STAFF);
@@ -74,8 +72,8 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 		for (int i = 0; i < MAX_PSLINES; i++)
 		{
 			//Draw line
-			PutText(&grcFull, 0, ptx->ypos_line[i] / ptx->scale + 1, c[i], RGB(0x00, 0x00, 0xFF));
-			PutText(&grcFull, 0, ptx->ypos_line[i] / ptx->scale + 0, c[i], RGB(0x00, 0x88, 0xFF));
+			PutText(&grcFull, 5, ptx->ypos_line[i] / ptx->scale + 1, c[i], RGB(0x00, 0x00, 0xFF));
+			PutText(&grcFull, 5, ptx->ypos_line[i] / ptx->scale + 0, c[i], RGB(0x00, 0x88, 0xFF));
 
 			//Scroll line
 			ptx->ypos_line[i] -= 2;

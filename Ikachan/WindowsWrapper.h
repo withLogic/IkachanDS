@@ -12,6 +12,10 @@ typedef unsigned char BYTE;
 typedef signed char CHAR;
 typedef long LONG;
 
+// adding some nds types
+typedef unsigned char s8;
+typedef int16_t	s16;
+
 #define FALSE false
 #define TRUE true
 

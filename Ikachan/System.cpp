@@ -6,14 +6,14 @@
 #include "Dialog.h"
 #include "Game.h"
 #include <stdio.h>
-
+#include <stdlib.h>
 #include <cstring>
 
-#include "nds.h"
-#include <filesystem.h>
-#include "nds/fifocommon.h"
-
-#include "fat.h"
+// commenting out nds stuff - wl
+//#include "nds.h"
+//#include <filesystem.h>
+//#include "nds/fifocommon.h"
+//#include "fat.h"
 
 //Keys
 DWORD gKey;
@@ -31,7 +31,7 @@ DWORD gMouse;
 int gWndWidth, gWndHeight;
 
 //Filepath
-char gModulePath[MAX_PATH];
+char gModulePath[MAX_PATH]; 
 
 //LRESULT CALLBACK WndProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
@@ -43,11 +43,8 @@ int Random(int min, int max)
 
 int main(int argc, char *argv[])
 {
-	fatInitDefault();
-
 	//Get module path
-	strcpy(gModulePath, "/");
-	
+	strcpy(gModulePath, DATADIR);	
 
 	StartDirectDraw();
 	//consoleDemoInit();
@@ -58,7 +55,7 @@ int main(int argc, char *argv[])
 	rcFull.bottom = SURFACE_HEIGHT;
 
 	//Load the "LOADING" text
-	BOOL b = MakeSurface_File("Pbm/Loading2.png", SURFACE_ID_LOADING2);
+	BOOL b = MakeSurface_File("Pbm//Loading2.png", SURFACE_ID_LOADING2);
 
 	//Draw loading screen
 	CortBox(&rcFull, 0x000000);
@@ -68,7 +65,7 @@ int main(int argc, char *argv[])
 		//Release Ikachan mutex
 		return 1;
 	}
-	
+
 	//Initialize DirectSound
 	if (InitDirectSound())
 	{

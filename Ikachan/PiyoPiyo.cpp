@@ -3,9 +3,7 @@
 #include "System.h"
 #include <stdio.h>
 #include <assert.h>
-
 #include <stdlib.h>
-
 #include "fopen.h"
 
 #define MAX_RECORD 1000
@@ -149,17 +147,17 @@ BOOL ReadPiyoPiyo(const char* path)
 		return FALSE;
 	
 	//Open file
-	FILE_e *fp = fopen_embed(path, "rb");
+	FILE *fp = fopen(path, "rb");
 	if (fp == NULL)
 		return FALSE;
 	
 	//Read data
-	fread_embed(&gPiyoPiyo.header, sizeof(PIYOPIYO_HEADER), 1, fp);
-	fread_embed(gPiyoPiyo.record[0], 4, gPiyoPiyo.header.records, fp);
-	fread_embed(gPiyoPiyo.record[1], 4, gPiyoPiyo.header.records, fp);
-	fread_embed(gPiyoPiyo.record[2], 4, gPiyoPiyo.header.records, fp);
-	fread_embed(gPiyoPiyo.record[3], 4, gPiyoPiyo.header.records, fp);
-	fclose_embed(fp);
+	fread(&gPiyoPiyo.header, sizeof(PIYOPIYO_HEADER), 1, fp);
+	fread(gPiyoPiyo.record[0], 4, gPiyoPiyo.header.records, fp);
+	fread(gPiyoPiyo.record[1], 4, gPiyoPiyo.header.records, fp);
+	fread(gPiyoPiyo.record[2], 4, gPiyoPiyo.header.records, fp);
+	fread(gPiyoPiyo.record[3], 4, gPiyoPiyo.header.records, fp);
+	fclose(fp);
 	gPiyoPiyo.position = -1;
 	return TRUE;
 }
@@ -212,7 +210,6 @@ void PiyoPiyoProc()
 		//Remember previous tick
 		gPiyoPiyo.tick = tick_count;
 	}
-	updateChannelStates();	
 }
 
 void MakePiyoPiyoSoundObjects()
@@ -275,12 +272,12 @@ void ChangePiyoPiyoVolume(PIYOPIYO_CONTROL *piyocont)
 //PiyoPiyo control
 const char* gMusicList[6] =
 {
-	"Pmd/Ikachan.pmd",
-	"Pmd/Magirete.pmd",
-	"Pmd/Buriki.pmd",
-	"Pmd/Mizuno.pmd",
-	"Pmd/Quake.pmd",
-	"Pmd/Tidepool.pmd",
+	"Pmd\\Ikachan.pmd",
+	"Pmd\\Magirete.pmd",
+	"Pmd\\Buriki.pmd",
+	"Pmd\\Mizuno.pmd",
+	"Pmd\\Quake.pmd",
+	"Pmd\\Tidepool.pmd",
 };
 
 void PiyoPiyoControl(PIYOPIYO_CONTROL *piyocont)
@@ -303,7 +300,7 @@ void PiyoPiyoControl(PIYOPIYO_CONTROL *piyocont)
 					
 					//Read given track
 					char path[MAX_PATH];
-					sprintf(path, "%s", gMusicList[piyocont->track]);
+					sprintf(path, "%s//%s", gModulePath, gMusicList[piyocont->track]);
 					ReadPiyoPiyo(path);
 					MakePiyoPiyoSoundObjects();
 					piyocont->prev_track = piyocont->track;

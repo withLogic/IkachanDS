@@ -4,7 +4,6 @@
 #include "PixelScript.h"
 #include <stdio.h>
 #include <cstring>
-
 #include "fopen.h"
 
 long GetFileSizeLong(const char *path)

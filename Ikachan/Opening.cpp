@@ -43,7 +43,7 @@ void PutOpening(OPENING *op)
 	if (op->pixel_x > ((SURFACE_WIDTH / 2) - 96))
 	{
 		//Move 'Made by Studio Pixel' text
-		op->pixel_x -= 2;
+		op->pixel_x -= 3;
 	}
 	else
 	{

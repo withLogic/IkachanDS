@@ -101,7 +101,7 @@ BOOL Game()
 
 	//Load generic data
 	LoadGenericData();
-	
+
 	//Initalize game
 	InitFlags();
 	InitItem(&items);
@@ -166,12 +166,12 @@ BOOL Game()
 	}
 	
 	//Load map event and data
-	sprintf(path, "%s", "Event.ptx");
+	sprintf(path, "%s//%s", gModulePath, "Event.ptx");
 	if (!ReadEventScript(path, &event_scr))
 		return TRUE;
 	//DebugPutText(event_scr.data);
 	
-	sprintf(path, "%s", "Pbm/Map1.pbm");
+	sprintf(path, "%s//%s", gModulePath, "Pbm/Map1.pbm");
 	if (!LoadMapData(path, &map))
 		return TRUE;
 	
@@ -223,7 +223,7 @@ BOOL Game()
 	}
 	
 	//Load intro script
-	sprintf(path, "%s", "Words.ptx");
+	sprintf(path, "%s//%s", gModulePath, "Words.ptx");
 	LoadPixelScript(&pix_scr, path, 2);
 	
 	//Intro
@@ -233,7 +233,7 @@ BOOL Game()
 		//tick = GetTickCount();
 		PiyoPiyoControl(&piyocont);
 		GetTrg();
-		CortBox(&grcFull, 0x00FFFF);
+		CortBox(&grcFull, 0xFFFFFF);
 		
 		//Run Pixel Script
 		if (PixelScriptProc(&pix_scr, &piyocont, FALSE) == 1)
